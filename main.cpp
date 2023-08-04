@@ -32,12 +32,16 @@ int main() {
     double dynamic_double[] = {3.7, 2.9, 1.2, 1.1, 1.0, 392.5};
     int thrD_array[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 
+    std::cout << "---------" << std::endl;
     for(int a = 0; a < 3; a++) {
+        std::cout << "| ";
         for(int b = 0; b < 3; b++) {
+            
             std::cout << thrD_array[a][b] << " ";
         }
-        std::cout << std::endl;
+        std::cout << "|" << std::endl;
     }
+    std::cout << "---------" << std::endl;
 
     std::cout << std::endl;
 
