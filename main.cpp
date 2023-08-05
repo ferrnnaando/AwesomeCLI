@@ -18,12 +18,12 @@ int main(int argc, char* argv[]) {
                 std::cout << commands::description::search_help_description;
                 return 0;
             } 
-            
-            } else {
+            else {
                 std::cout << " -search *(set/your/path/file.txt) *(text-to-search) -> " << commands::description::search_description << std::endl << std::endl; 
                 return 0;
             }
-        }
+            
+            } 
         else if(argv[1] == prefix::command::command + "search") {
             ++count;
             std::cout << argv[1] << ": Work fines." << std::endl;
