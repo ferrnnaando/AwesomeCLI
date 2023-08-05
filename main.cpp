@@ -1,58 +1,61 @@
 #include "header.h"
 
 int main(int argc, char* argv[]) {
-    if(argc == 1) {
+
+    int text;
+    switch(argc) {
+    case 1:
         std::cout << "Introduce una opcion a ejecutar, usa --help para obtener ayuda." << std::endl;
         return 1;
-    } 
-    else {
-        if(argv[1] == prefix::help::help + "help") {
-             if(argc >= 3) {
-                std::cout << "No puedes hacer eso. ¿Quisiste decir --help <command>?" << std::endl;
-                return 1;
-            } 
-            else if(argc > 2 && std::string(argv[2]) == "search") {
-                std::cout << commands::description::search_help_description;
-                return 0;
-            } 
-            else {
-                std::cout << " -search *(set/your/path/file.txt) *(text-to-search) -> " << commands::description::search_description << std::endl << std::endl; 
-                return 0;
-            }  
+
+    case 2:
+    if(argv[1] == prefix::help::help + "help") {
+        if(argc >= 3) {
+            std::cout << "No puedes hacer eso. ¿Quisiste decir --help <command>?" << std::endl;
+            return 1;
         } 
-        else if(argv[1] == prefix::command::command + "search") {
-            if(argc == 2) {
-                std::cout << argv[1] << ": Comando incompleto. ¿Quisiste decir --help search?" << std::endl;
-                return 1;
-            }
-            else if(argc == 3) {
-                std::cout << argv[1] << " " << argv[2] << ": Introduce el texto que deseas buscar en el archivo " << argv[2] << std::endl;
-                return 1;
-            }
-            else if(argc == 4) {
-                std::cout << argv[1] << " " << argv[2] << " " << argv[3] << ": Buscando." << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(900));
-                std::cout << argv[1] << " " << argv[2] << " " << argv[3] << ": Buscando.." << std::endl;
-                std::this_thread::sleep_for(std::chrono::milliseconds(900));
-                std::cout << argv[1] << " " << argv[2] << " " << argv[3] << ": Buscando..." << std::endl;
-                return 0;
-            }
-            else if(argc >= 5) {
-                std::cout << "Has introducido más argumentos de los esperados para el comando -search. Usa --help search para saber como funciona." << std::endl;
-                return 1;
-            }
-            //should use a ifstream 
+        else if(argc > 2 && std::string(argv[2]) == "search") {
+            std::cout << commands::description::search_help_description;
             return 0;
         } 
+        else {
+            std::cout << " -search *(set/your/path/file.txt) *(text-to-search) -> " << commands::description::search_description << std::endl << std::endl; 
+            return 0;
+        }  
+    } 
+    else if(argv[1] == prefix::command::command + "search") {
+      if(argc == 2) {
+        std::cout << argv[1] << ": Comando incompleto. ¿Quisiste decir --help search?" << std::endl;
+        return 1;
+    }
+    else if(argc == 3) {
+        std::cout << argv[1] << " " << argv[2] << ": Introduce el texto que deseas buscar en el archivo " << argv[2] << std::endl;
+        return 1;
+    }
+    else if(argc == 4) {
+        std::cout << argv[1] << " " << argv[2] << " " << argv[3] << ": Buscando." << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(900));
+        std::cout << argv[1] << " " << argv[2] << " " << argv[3] << ": Buscando.." << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(900));
+        std::cout << argv[1] << " " << argv[2] << " " << argv[3] << ": Buscando..." << std::endl;
+        return 0;
+    }
+    else if(argc >= 5) {
+        std::cout << "Has introducido más argumentos de los esperados para el comando -search. Usa --help search para saber como funciona." << std::endl;
+        return 1;
+    }
+        //should use a ifstream 
+        return 0;
+    } 
 
-        //handle errors
-        else if(startsWith(argv[1], "--")) {
-            std::cout << argv[1] << ": " << errors::no_exist;
-            return 1;
-        } else if(startsWith(argv[1], "-")) {
-            std::cout << argv[1] << ": " << errors::no_exist;
-            return 1;
-        }
+    //handle errors
+    else if(startsWith(argv[1], "--")) {
+        std::cout << argv[1] << ": " << errors::no_exist;
+        return 1;
+    } else if(startsWith(argv[1], "-")) {
+        std::cout << argv[1] << ": " << errors::no_exist;
+        return 1;
+    }
     }
 
 //chec if enters -- and a comand to throw werror
