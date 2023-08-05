@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     else {
         if(argv[1] == prefix::help::help + "help") {
              if(argc >= 3) {
-                std::cout << "Ask just for one command at the same time.\n";
+                std::cout << "No puedes hacer eso. ¿Quisiste decir --help <command>?" << std::endl;
                 return 1;
             } 
             else if(argc > 2 && std::string(argv[2]) == "search") {
@@ -25,6 +25,10 @@ int main(int argc, char* argv[]) {
         } 
         else if(argv[1] == prefix::command::command + "search") {
             ++count;
+            if(argc >= 5) {
+                std::cout << "Has introducido más argumentos de los esperados para -search. Usa --help search para ver más." << std::endl;
+                return 1;
+            }
             std::cout << argv[1] << ": Work fines." << std::endl;
             //should use a ifstream 
             return 0;
@@ -33,8 +37,10 @@ int main(int argc, char* argv[]) {
         //handle errors
         else if(startsWith(argv[1], "--")) {
             std::cout << argv[1] << ": The entered parameter does not exist. Did you mean \"--help\"?\n";
+            return 1;
         } else if(startsWith(argv[1], "-")) {
             std::cout << argv[1] << ": The entered command not exist. Did you mean \"--help\"?\n";
+            return 1;
         }
     }
 
