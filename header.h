@@ -14,7 +14,7 @@
 
 namespace prefix {
     namespace help {
-        std::string help = "--";
+        std::string long_prefix = "--";
     }
 
     namespace command {
