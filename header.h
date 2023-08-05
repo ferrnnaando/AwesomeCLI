@@ -29,3 +29,10 @@ namespace prefix {
         }
     }
 //separe namespace description into long desc and short desc maybe
+
+bool startsWith(const char* argv, const char* prefix) {
+    std::string command(argv);
+    std::string prefixC(prefix);
+
+    return (command.substr(0, prefixC.length()) == prefixC);
+}

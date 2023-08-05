@@ -21,17 +21,20 @@ int main(int argc, char* argv[]) {
             else {
                 std::cout << " -search *(set/your/path/file.txt) *(text-to-search) -> " << commands::description::search_description << std::endl << std::endl; 
                 return 0;
-            }
-            
-            } 
+            }  
+        } 
         else if(argv[1] == prefix::command::command + "search") {
             ++count;
             std::cout << argv[1] << ": Work fines." << std::endl;
             //should use a ifstream 
             return 0;
         } 
-        else {
-            std::cout << argv[1] << ": El comando indicado no existe." << std::endl;
+
+        //handle errors
+        else if(startsWith(argv[1], "--")) {
+            std::cout << argv[1] << ": The entered parameter does not exist. Did you mean \"--help\"?\n";
+        } else if(startsWith(argv[1], "-")) {
+            std::cout << argv[1] << ": The entered command not exist. Did you mean \"--help\"?\n";
         }
     }
 
