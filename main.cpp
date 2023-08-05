@@ -1,13 +1,96 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+
 #ifdef _WIN32
     #include <conio.h>
+    #include <windows.h>
+
 #else
     #include <unistd.h>
 #endif
 
-using namespace std;
 
-int main() {
+
+namespace prefix {
+    namespace help {
+        std::string help = "--";
+    }
+
+    namespace command {
+        std::string command = "-";
+    }
+}
+    namespace commands {
+        namespace description {
+            std::string search_description = "Searchs for the specified text in the specified file text.";
+            const char* search_help_description = "Help for --search subcommand: \n"
+                                "Usage: -search <file_path> <text_to_search>\n"
+                                "Description: Searchs for the specified text in the specified file text.\n"
+                                "Example: -search /path/to/file.txt \"Hello, world!\"\n";
+        }
+    }
+//separe namespace description into long desc and short desc maybe
+int main(int argc, char* argv[]) {
+    int count = 0;
+
+    if(argc == 1) {
+        //std::cout << "dumb";
+        std::cout << "Introduce una opcion a ejecutar, usa --help para obtener ayuda." << std::endl;
+        return 1;
+    } 
+    else {
+        if(argv[1] == prefix::help::help + "help") {
+             if(argc >= 3) {
+                std::cout << "Ask just for one command at the same time.\n";
+                return 1;
+            } 
+            else if(argc > 2 && std::string(argv[2]) == "search") {
+                std::cout << commands::description::search_help_description;
+                return 0;
+            } 
+            
+            } else {
+                std::cout << " -search *(set/your/path/file.txt) *(text-to-search) -> " << commands::description::search_description << std::endl << std::endl; 
+                return 0;
+            }
+        }
+        else if(argv[1] == prefix::command::command + "search") {
+            ++count;
+            std::cout << argv[1] << ": Work fines." << std::endl;
+            //should use a ifstream 
+            return 0;
+        } 
+        else {
+            std::cout << argv[1] << ": El comando indicado no existe." << std::endl;
+        }
+    }
+
+    if(count > 1) {
+        std::cout << "Please enter just one subcommand.";
+        return 1;
+    }
+
+
+//chec if enters -- and a comand to throw werror
+
+    return 0;
+}
+
+/*#ifdef _WIN32
+    // Code specific to Windows platform
+    #include <windows.h>
+#endif
+
+#ifdef _MSC_VER
+    #if _MSC_VER >= 1929
+        // Code for Visual C++ 2019 and newer
+    #else
+        // Code for older versions of Visual C++
+    #endif
+#endif*/
+
+/*int main() {
     int numero, contador = 0;
     do {
         cout << "Introduce un numero: ";
@@ -54,3 +137,4 @@ int main() {
 
     return 0;
     }
+*/
