@@ -2,44 +2,49 @@
 #include "structure/header.h"
 
 int main(int argc, char* argv[]) {
-switch (argc) {
-        case 1:
-            std::cout << "Introduce una opcion a ejecutar, usa --help para obtener ayuda." << std::endl;
-            return 1;
+    std::string exec_name = argv[0];
+    if(exec_name.find("awesomecli") == std::string::npos) {
+        std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"awesomecli\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
+    } else {
+        switch (argc) {
+            case 1:
+                std::cout << "Introduce una opcion a ejecutar, usa --help para obtener ayuda." << std::endl;
+                return 1;
 
-        default:
-            if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") {
-                switch (argc) {
-                    case 2:
-                        std::cout << commands::description::help_description;
-                        return 0;
-
-                    case 3:
-                        if (std::string(argv[2]) == "search") {
-                            std::cout << commands::description::search_help_description;
+            default:
+                if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") {
+                    switch (argc) {
+                        case 2:
+                            std::cout << commands::description::help_description;
                             return 0;
-                        } else {
-                            std::cout << "-" << argv[2] << ": " << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
-                        }
-                        break; 
 
-                    default:
-                        if (argc >= 4) {
-                            std::cout << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
-                            return 1;
-                        } else {
-                            std::cout << "Error inesperado." << std::endl;
-                            return 1;
-                        }
+                        case 3:
+                            if (std::string(argv[2]) == "search") {
+                                std::cout << commands::description::search_help_description;
+                                return 0;
+                            } else {
+                                std::cout << "-" << argv[2] << ": " << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
+                            }
+                            break; 
+
+                        default:
+                            if (argc >= 4) {
+                                std::cout << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                                return 1;
+                            } else {
+                                std::cout << "Error inesperado." << std::endl;
+                                return 1;
+                            }
+                    }
+                } 
+                else if(argv[1] == prefix::long_prefix + "version" || argv[1] == prefix::short_prefix + "v") {
+                    std::cout << commands::description::version_description;
                 }
-            } 
-            else if(argv[1] == prefix::long_prefix + "version" || argv[1] == prefix::short_prefix + "v") {
-                 std::cout << commands::description::version_description;
-            }
 
-            break; 
-
+                break; 
+        }
     }
+
     return 0;
 }
 
