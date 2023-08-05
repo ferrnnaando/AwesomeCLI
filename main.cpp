@@ -1,4 +1,5 @@
 #include "header.h"
+#include "structure/header.h"
 
 int main(int argc, char* argv[]) {
 switch (argc) {
@@ -7,10 +8,10 @@ switch (argc) {
             return 1;
 
         default:
-            if (argv[1] == prefix::help::long_prefix + "help") {
+            if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") {
                 switch (argc) {
                     case 2:
-                        std::cout << " -search *(set/your/path/file.txt) *(text-to-search) -> " << commands::description::search_description << std::endl << std::endl; 
+                        std::cout << commands::description::help_description;
                         return 0;
 
                     case 3:
@@ -22,18 +23,20 @@ switch (argc) {
                         }
                         break; 
 
-                    case 4:
-                        if (argc >= 3) {
+                    default:
+                        if (argc >= 4) {
                             std::cout << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
                             return 1;
                         } else {
                             std::cout << "Error inesperado." << std::endl;
                             return 1;
                         }
-
-                        break; 
                 }
             } 
+            else if(argv[1] == prefix::long_prefix + "version" || argv[1] == prefix::short_prefix + "v") {
+                 std::cout << commands::description::version_description;
+            }
+
             break; 
 
     }

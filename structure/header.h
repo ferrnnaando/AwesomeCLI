@@ -1,0 +1,1 @@
+bool startsWith(const char* argv, const char* prefix);
