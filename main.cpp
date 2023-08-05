@@ -1,36 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <string>
+#include "header.h"
 
-#ifdef _WIN32
-    #include <conio.h>
-    #include <windows.h>
-
-#else
-    #include <unistd.h>
-#endif
-
-
-
-namespace prefix {
-    namespace help {
-        std::string help = "--";
-    }
-
-    namespace command {
-        std::string command = "-";
-    }
-}
-    namespace commands {
-        namespace description {
-            std::string search_description = "Searchs for the specified text in the specified file text.";
-            const char* search_help_description = "Help for --search subcommand: \n"
-                                "Usage: -search <file_path> <text_to_search>\n"
-                                "Description: Searchs for the specified text in the specified file text.\n"
-                                "Example: -search /path/to/file.txt \"Hello, world!\"\n";
-        }
-    }
-//separe namespace description into long desc and short desc maybe
 int main(int argc, char* argv[]) {
     int count = 0;
 
