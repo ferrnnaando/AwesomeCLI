@@ -4,6 +4,7 @@
 #include <fstream> //?
 #include <string>
 #include <sstream> //?
+#include <vector>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -12,12 +13,12 @@
     #include <unistd.h>
     #include <chrono>
     #include <thread>
-    #define ANSI_COLOR_RESET "\033[0m"
-    #define ANSI_COLOR_GREEN "\033[32m"
-    #define GREEN "\033[32m"
-    ///#define ANSI_RED "\033[31m"
     const std::string ANSI_RED = "\033[31m";
 #endif
+
+struct config_file;
+
+struct hardware_info;
 
 namespace prefix {
         std::string short_prefix = "-";

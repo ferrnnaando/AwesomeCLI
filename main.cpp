@@ -3,11 +3,9 @@
 //<filesystem> what is lol
 
     std::string color;
-    std::string formatted_color;
 
 int main(int argc, char* argv[]) {
     std::string error = ANSI_RED + "Error: " + ANSI_RED;
-    color = ANSI_COLOR_RESET;
     prefix::entered_exec_name = argv[0];
 
     if(prefix::entered_exec_name.find(prefix::program_name) == std::string::npos) {
@@ -42,62 +40,70 @@ int main(int argc, char* argv[]) {
                                 std::cout << commands::description::help_search;
                                 return 0;
                             } else {
-                                std::cout << "-" << argv[2] << ": " << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
+                                std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
+                                return 1;
                             }
                             break; 
 
                         default:
                             if (argc >= 4) {
-                                std::cout << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                                std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
                                 return 1;
                             } else {
-                                std::cout << "Error inesperado." << std::endl;
+                                std::cout << error << "Error inesperado." << std::endl;
                                 return 1;
                             }
                     }
                 }
                 else if(argv[1] == prefix::long_prefix + "search" || argv[1] == prefix::short_prefix + "s") {
                     //std::__is_nothrow_uses_allocator_constructiblees
-                    bool found = false;
+                    std::string search = argv[3];
                     switch(argc) {
                     case 2:
                         std::cout << "Uso: " << commands::description::help_search;
                         std::cout << error << "           ^~~~~~~~~~~~~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl; //set --search or -s for a more friendly-interact
                         return 1;
-                    
                     case 3:
                         std::cout << "Uso: " << commands::description::help_search;
-                         std::cout << error << "                     ^~~~~~~~" << std::endl;
+                        std::cout << error << "                     ^~~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
                         return 1;
-
                     case 4:
+                        bool found = false;
                         int lineNum = 0;
-                        std::ifstream path(argv[2]);
-                        std::string search = argv[3];
-                        if(!path) {
-                            std::cout << error << "El archivo indicado no existe, asegurate de indicar el formato de ruta correctamente." << std::endl;
+                        std::vector<int> found_multiple;
+
+                        std::string keyword;
+                        std::string search = argv[2];
+                        std::ifstream file(search);
+                        if (!file) {
+                            std::cout << error << "El archivo " << argv[2] << " no existe, asegúrate de indicar el formato de ruta correctamente." << std::endl;
                             return 1;
                         }
 
                         std::string line;
-                        while(std::getline(path, line)) {
-                            if(line.find(search) != std::string::npos) {
+                        while (std::getline(file, line)) {
+                            lineNum++;
+                            if (line.find(argv[3]) != std::string::npos) {
                                 found = true;
+                                found_multiple.push_back(lineNum);
                                 break;
                             }
-                            lineNum++;
                         }
 
-                        if(found) {
-                            std::cout << "Se ha encontrado en la linea número " << lineNum << " el valor introducido " << argv[3] << std::endl;
+                        if (found) {
+                            std::cout << "Informacion:\n  Palabra clave: " << argv[3] << ",\n";
+                            for(int lineNum : found_multiple) {
+                                std::cout << " Linea: " << lineNum << " || Contenido: " << line << std::endl;
+                            }
                             return 0;
                         } else {
-                            std::cout << "No encontrado.";
+                            std::cout << error << "La palabra clave introducida no existe en el archivo existente." << std::endl;
                             return 1;
                         }
-                        
                     }
-                } 
+                }
                 else if(argv[1] == prefix::long_prefix + "version" || argv[1] == prefix::short_prefix + "v") {
                     std::cout << commands::description::version_description;
                     return 0;
@@ -110,13 +116,12 @@ int main(int argc, char* argv[]) {
 
                     case 3:
                         if (std::string(argv[2]) == "set.color") {
-                            std::cout << "Introduce un color: gris, verde" << std::endl;
+                            std::cout << error << "Introduce un color: gris, verde" << std::endl;
                             return 1;
                         } else {
-                            std::cout << "El parametro indicado no existe. ¿Quisiste decir --help config?" << std::endl;
+                            std::cout << error << "El parámetro indicado no existe. ¿Quisiste decir --help config?" << std::endl;
                             return 1;
                         }
-                        return 0;
 
                     case 4:
                         if (std::string(argv[2]) == "set.color") {
@@ -129,7 +134,7 @@ int main(int argc, char* argv[]) {
                                 return 0;
                             } 
                             else {
-                                std::cout << "El color indicado no existe. ¿Quisiste decir --help config?" << std::endl;
+                                std::cout << error << "El color indicado no existe. ¿Quisiste decir --help config?" << std::endl;
                                 return 1;
                             }
                         }
@@ -137,15 +142,15 @@ int main(int argc, char* argv[]) {
 
                     default:
                         if (argc >= 4) { //awesome-cli -c set.color red ->red<->>
-                            std::cout << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help config?" << std::endl;
+                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help config?" << std::endl;
                             return 1;
                         } else { //unhandled error
-                            std::cout << "Error inesperado." << std::endl;
+                            std::cout << error << "Error inesperado." << std::endl;
                             return 1;
                         }
                     }
                 } else { //checking if entered a command not registered
-                    std::cout << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
+                    std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
                 }
             }
         }
