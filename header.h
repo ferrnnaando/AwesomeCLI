@@ -11,15 +11,16 @@
     #include <unistd.h>
     #include <chrono>
     #include <thread>
+    #define ANSI_COLOR_RESET "\033[0m"
+    #define ANSI_COLOR_GREEN "\033[32m"
     #define GREEN "\033[32m"
 #endif
-
-#define ANSI_COLOR_RESET "\033[0m"
-#define ANSI_COLOR_GREEN "\033[32m"
 
 namespace prefix {
         std::string short_prefix = "-";
         std::string long_prefix = "--";
+        std::string program_name = "awesome-cli";
+        std::string entered_exec_name;
 }
 
 namespace commands {
@@ -31,14 +32,19 @@ namespace commands {
                             "Example: -search /path/to/file.txt \"Hello, world!\"\n";
 
         const char* help_description = "Uso: ./awesome-cli --comando / -alias <opcion> <otra opcion>\n\n"
+                                       ""
                                        "Opciones:\n"
                                        "  -h, --help                        Mostrar ayuda,\n"
                                        "  -V, --version                     Mostrar versión,\n"
                                        "  -c, --config                      Muestra tu configuración y modifícala.\n\n"
+                                       ""
                                        "Comandos:\n"
                                        "  -s, --search <archivo> <string>   Busca una cadena de carácteres en un archivo de texto.\n\n"
+                                       ""
                                        "Ejemplos:\n"
-                                       "  ./awesome-cli ";
+                                       "  ./awesome-cli --config color,\n"
+                                       "  ./awesome-cli --config set.color green,\n"
+                                       "  ./awesome-cli -s ~/Desktop/Dev/file.txt ram.\n\n";
 
         const char* version_description = " * Versión: 2.1.3\n"
                                           "    // Un CLI eficiente, compacto y versátil capaz de hacer cualquier cosa.\n"

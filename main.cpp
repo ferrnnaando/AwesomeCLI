@@ -2,60 +2,31 @@
 #include "structure/structure.h"
 //<filesystem> what is lol
 
-int main(int argc, char* argv[]) {
     std::string color;
-    color = ANSI_COLOR_RESET;
-    std::string exec_name = argv[0];
     std::string formatted_color;
 
-    if(exec_name.find("awesome-cli") == std::string::npos) {
-        std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"awesome-cli\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
+int main(int argc, char* argv[]) {
+    color = ANSI_COLOR_RESET;
+    prefix::entered_exec_name = argv[0];
+
+    if(prefix::entered_exec_name.find(prefix::program_name) == std::string::npos) {
+        std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"" + prefix::program_name + "\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
         return 1;
     } 
     else {
-
-        if(!is_sudo()) {
-            std::cout << "El programa parece no estar ejecutándose con el permiso de root mediante sudo. \nDar este permiso es de vital importancia para que AwesomeCLI pueda acceder a \nla información del hardware, rastrear rutas del sistema y  monitorear información.\n";
-            return 1;
+        if(is_sudo()) {
+             if (!files_exists("/awesome-cli/")) {
+                config_files();
+            }
         }
         else {
-           
-            if (!files_exists("/awesome-cli/")) {
-                config_files();
-
-                // Check if config file exists and read color from it
-                std::ifstream config_file("/awesome-cli/config");
-                if (config_file.is_open()) {
-                    std::string line;
-                    while (std::getline(config_file, line)) {
-                        if (line.find("color:") != std::string::npos) {
-                            formatted_color = line.substr(line.find(":") + 2);
-                            break;
-                        }
-                    }
-                    config_file.close();
-                } else {
-                    // Config file does not exist, set default color
-                    formatted_color = "default";
-                    std::ofstream register_config;
-                    register_config.open("/awesome-cli/config", std::ios::out);
-                    if (register_config.is_open()) {
-                        register_config << "color: " << formatted_color;
-                        register_config.close();
-                    }
-                }
-
-                if (formatted_color == "verde") {
-                    color = ANSI_COLOR_GREEN;
-                } else {
-                    color = ANSI_COLOR_RESET;
-                }
-            }
+           std::cout << "El programa parece no estar ejecutándose con el permiso de root mediante sudo. \nDar este permiso es de vital importancia para que AwesomeCLI pueda acceder a \nla información del hardware, rastrear rutas del sistema y  monitorear información.\n";
+            return 1;
         }
 
         switch (argc) {
             case 1:
-                std::cout << "Uso: ./awesome-cli --help / -h" << std::endl;
+                std::cout << "Uso: ./" + prefix::program_name + " --help / -h" << std::endl;
                 return 1;
 
             default:
