@@ -3,36 +3,66 @@
 //<filesystem> what is lol
 
 int main(int argc, char* argv[]) {
+    std::string color;
+    color = ANSI_COLOR_RESET;
     std::string exec_name = argv[0];
+    std::string formatted_color;
 
-    if(exec_name.find("awesomecli") == std::string::npos) {
-        std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"awesomecli\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
+    if(exec_name.find("awesome-cli") == std::string::npos) {
+        std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"awesome-cli\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
         return 1;
     } 
     else {
 
         if(!is_sudo()) {
-            std::cout << "El programa parece no estar ejecutándose con el permiso de root mediante sudo. Dar este permiso es de vital importancia para que AwesomeCLI pueda acceder a la información del hardware, rastrear rutas del sistema y monitorear información.";
+            std::cout << "El programa parece no estar ejecutándose con el permiso de root mediante sudo. \nDar este permiso es de vital importancia para que AwesomeCLI pueda acceder a \nla información del hardware, rastrear rutas del sistema y  monitorear información.\n";
             return 1;
         }
         else {
-            if(!files_exists("/awesomecli/")) {
-                if(!files_exists("/awesome/cli/config")) {
-                    config_files();
+           
+            if (!files_exists("/awesome-cli/")) {
+                config_files();
+
+                // Check if config file exists and read color from it
+                std::ifstream config_file("/awesome-cli/config");
+                if (config_file.is_open()) {
+                    std::string line;
+                    while (std::getline(config_file, line)) {
+                        if (line.find("color:") != std::string::npos) {
+                            formatted_color = line.substr(line.find(":") + 2);
+                            break;
+                        }
+                    }
+                    config_file.close();
+                } else {
+                    // Config file does not exist, set default color
+                    formatted_color = "default";
+                    std::ofstream register_config;
+                    register_config.open("/awesome-cli/config", std::ios::out);
+                    if (register_config.is_open()) {
+                        register_config << "color: " << formatted_color;
+                        register_config.close();
+                    }
+                }
+
+                if (formatted_color == "verde") {
+                    color = ANSI_COLOR_GREEN;
+                } else {
+                    color = ANSI_COLOR_RESET;
                 }
             }
         }
 
         switch (argc) {
             case 1:
-                std::cout << "Uso: ./awesomecli --help / -h" << std::endl;
+                std::cout << "Uso: ./awesome-cli --help / -h" << std::endl;
                 return 1;
 
             default:
                 if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") {
                     switch (argc) {
                         case 2:
-                            std::cout << GREEN << commands::description::help_description;
+                            std::cout << color << commands::description::help_description;
                             return 0;
 
                         case 3:
@@ -56,11 +86,54 @@ int main(int argc, char* argv[]) {
                 } 
                 else if(argv[1] == prefix::long_prefix + "version" || argv[1] == prefix::short_prefix + "v") {
                     std::cout << commands::description::version_description;
+                    return 0;
                 }
+                else if(argv[1] == prefix::long_prefix + "config" || argv[1] == prefix::short_prefix + "c") {
+                   switch (argc) {
+                    case 2:
+                        std::cout << "show the config.";
+                        return 0;
 
-                break; 
+                    case 3:
+                        if (std::string(argv[2]) == "color") {
+                            std::cout << "Introduce un color: gris, verde";
+                        }
+                        return 0;
+
+                    case 4:
+                        if (std::string(argv[2]) == "color") {
+                            if (std::string(argv[3]) == "verde") { 
+                                
+
+                                    formatted_color = "verde";
+                                    std::ofstream register_config;
+                                    register_config.open("/awesome-cli/config", std::ios::out);
+                                    if (register_config.is_open()) {
+                                        register_config << "color: " << formatted_color;
+                                        register_config.close();
+                                    }
+
+
+                                if (register_config.is_open()) {
+                                    register_config << "color: " << formatted_color;
+                                }
+
+                        std::cout << color << "El color verde es el nuevo color de terminal.";
+                            } else if (std::string(argv[3]) == "gris") {
+                                std::cout << "El color gris es el nuevo color de terminal.";
+                            } else {
+                                std::cout << "Color no reconocido. Usa 'verde' o 'gris'.";
+                            }
+                        }
+                        return 1;
+
+                    default:
+                        std::cout << "Comando no reconocido.";
+                        return 1;
+                    }
+                }
+            }
         }
-    }
 
     return 0;
 }

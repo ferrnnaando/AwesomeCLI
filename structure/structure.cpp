@@ -12,7 +12,7 @@ bool files_exists(const std::string& directory) {
 }
 
 void config_files() {
-    system("mkdir /awesomecli/ && touch /awesomecli/config");
+    system("mkdir /awesome-cli/ && touch /awesome-cli/config.txt");
 }
 
 bool startsWith(const char* argv, const char* prefix) {
