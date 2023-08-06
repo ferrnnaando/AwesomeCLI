@@ -1,5 +1,19 @@
-#include "header.h"
-#include <string>
+#include "structure.h"
+
+bool is_sudo() {
+    return (geteuid() == 0);
+}
+
+//bool files_exists() {
+bool files_exists(const std::string& directory) {
+    std::ifstream file(directory);
+    
+    return file.good();
+}
+
+void config_files() {
+    system("mkdir /awesomecli/ && touch /awesomecli/config");
+}
 
 bool startsWith(const char* argv, const char* prefix) {
     std::string command(argv);

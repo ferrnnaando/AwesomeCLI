@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,6 +11,7 @@
     #include <unistd.h>
     #include <chrono>
     #include <thread>
+    #define GREEN "\033[32m"
 #endif
 
 namespace prefix {

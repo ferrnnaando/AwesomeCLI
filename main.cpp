@@ -1,21 +1,38 @@
 #include "header.h"
-#include "structure/header.h"
+#include "structure/structure.h"
+//<filesystem> what is lol
 
 int main(int argc, char* argv[]) {
     std::string exec_name = argv[0];
+
     if(exec_name.find("awesomecli") == std::string::npos) {
         std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"awesomecli\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
-    } else {
+        return 1;
+    } 
+    else {
+
+        if(!is_sudo()) {
+            std::cout << "El programa parece no estar ejecutándose con el permiso de root mediante sudo. Dar este permiso es de vital importancia para que AwesomeCLI pueda acceder a la información del hardware, rastrear rutas del sistema y monitorear información.";
+            return 1;
+        }
+        else {
+            if(!files_exists("/awesomecli/")) {
+                if(!files_exists("/awesome/cli/config")) {
+                    config_files();
+                }
+            }
+        }
+
         switch (argc) {
             case 1:
-                std::cout << "Introduce una opcion a ejecutar, usa --help para obtener ayuda." << std::endl;
+                std::cout << "Uso: ./awesomecli --help / -h" << std::endl;
                 return 1;
 
             default:
                 if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") {
                     switch (argc) {
                         case 2:
-                            std::cout << commands::description::help_description;
+                            std::cout << GREEN << commands::description::help_description;
                             return 0;
 
                         case 3:
