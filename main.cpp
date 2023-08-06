@@ -19,13 +19,13 @@ int main(int argc, char* argv[]) {
             }
         }
         else {
-           std::cout << "Uso: sudo ./awesome-cli\n";
+           std::cout << "Uso: sudo ./awesome-cli --help\n";
             return 1;
         }
 
         switch (argc) {
             case 1: //tells how to do a good usage if the user just did ./awesome-cli
-                std::cout << "Uso: sudo ./" + prefix::program_name + " --help / -h (No ejecutado con permisos de root)" << std::endl;
+                std::cout << "Uso: sudo ./" + prefix::program_name + " --help" << std::endl;
                 return 1;
 
             default: //if the user entered a parameter, let register it and value it below.
@@ -57,7 +57,17 @@ int main(int argc, char* argv[]) {
                 }
                 else if(argv[1] == prefix::long_prefix + "search" || argv[1] == prefix::short_prefix + "s") {
                     //std::__is_nothrow_uses_allocator_constructiblees
-                    std::string search = argv[3];
+
+                    std::string line;
+
+                    bool found = false;
+                    int lineNum = 0;
+                    std::vector<int> found_multiple;
+
+                    std::string keyword;
+                    std::string search = argv[2];
+                    std::ifstream file(search);
+
                     switch(argc) {
                     case 2:
                         std::cout << "Uso: " << commands::description::help_search;
@@ -70,36 +80,37 @@ int main(int argc, char* argv[]) {
                         std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
                         return 1;
                     case 4:
-                        bool found = false;
-                        int lineNum = 0;
-                        std::vector<int> found_multiple;
-
-                        std::string keyword;
-                        std::string search = argv[2];
-                        std::ifstream file(search);
                         if (!file) {
                             std::cout << error << "El archivo " << argv[2] << " no existe, asegúrate de indicar el formato de ruta correctamente." << std::endl;
                             return 1;
-                        }
-
-                        std::string line;
-                        while (std::getline(file, line)) {
-                            lineNum++;
-                            if (line.find(argv[3]) != std::string::npos) {
-                                found = true;
-                                found_multiple.push_back(lineNum);
-                                break;
-                            }
-                        }
-
-                        if (found) {
-                            std::cout << "Informacion:\n  Palabra clave: " << argv[3] << ",\n";
-                            for(int lineNum : found_multiple) {
-                                std::cout << " Linea: " << lineNum << " || Contenido: " << line << std::endl;
-                            }
-                            return 0;
                         } else {
-                            std::cout << error << "La palabra clave introducida no existe en el archivo existente." << std::endl;
+                            while (std::getline(file, line)) {
+                                lineNum++;
+                                if (line.find(argv[3]) != std::string::npos) {
+                                    found = true;
+                                    found_multiple.push_back(lineNum);
+                                    break;
+                                }
+                            }
+
+                            if (found) {
+                                std::cout << "Informacion:\n  Palabra clave: " << argv[3] << ",\n";
+                                for(int lineNum : found_multiple) {
+                                    std::cout << " Linea: " << lineNum << " || Contenido: " << line << std::endl;
+                                }
+                                return 0;
+                            } else {
+                                std::cout << error << "La palabra clave introducida no existe en el archivo existente." << std::endl;
+                                return 1;
+                            }
+                        }
+
+                    default:
+                        if(argc >= 5){
+                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help search?" << std::endl;
+                            return 1;
+                        } else {
+                            std::cout << error << "Error inesperado.";
                             return 1;
                         }
                     }
@@ -151,6 +162,7 @@ int main(int argc, char* argv[]) {
                     }
                 } else { //checking if entered a command not registered
                     std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
+                    return 1;
                 }
             }
         }

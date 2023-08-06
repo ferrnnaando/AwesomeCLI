@@ -4,7 +4,6 @@ bool is_sudo() {
     return (geteuid() == 0);
 }
 
-//bool files_exists() {
 bool files_exists(const std::string& directory) {
     std::ifstream file(directory);
     
