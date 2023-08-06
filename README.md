@@ -35,4 +35,4 @@ cd AwesomeCLI
    required: sudo ./awesome-cli
    ```
    
-4. Feel free to edit and use it for your personal use or developing apps with this main structure that will reserve you a lot of time.
+3. Feel free to edit and use it for your personal use or developing apps with this main structure that will reserve you a lot of time.
