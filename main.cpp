@@ -20,20 +20,20 @@ int main(int argc, char* argv[]) {
             }
         }
         else {
-           std::cout << "El programa parece no estar ejecutándose con el permiso de root mediante sudo. \nDar este permiso es de vital importancia para que AwesomeCLI pueda acceder a \nla información del hardware, rastrear rutas del sistema y  monitorear información.\n";
+           std::cout << "Uso: sudo ./awesome-cli\n";
             return 1;
         }
 
         switch (argc) {
-            case 1:
-                std::cout << "Uso: ./" + prefix::program_name + " --help / -h" << std::endl;
+            case 1: //tells how to do a good usage if the user just did ./awesome-cli
+                std::cout << "Uso: sudo ./" + prefix::program_name + " --help / -h (No ejecutado con permisos de root)" << std::endl;
                 return 1;
 
-            default:
-                if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") {
+            default: //if the user entered a parameter, let register it and value it below.
+                if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") { //|| allows to check for long command version prefix and the alias.
                     switch (argc) {
                         case 2:
-                            std::cout << color << commands::description::help_description;
+                            std::cout << color << commands::description::help_description; //print the main help const char message
                             return 0;
 
                         case 3:
@@ -66,42 +66,43 @@ int main(int argc, char* argv[]) {
                         return 0;
 
                     case 3:
-                        if (std::string(argv[2]) == "color") {
-                            std::cout << "Introduce un color: gris, verde";
+                        if (std::string(argv[2]) == "set.color") {
+                            std::cout << "Introduce un color: gris, verde" << std::endl;
+                            return 1;
+                        } else {
+                            std::cout << "El parametro indicado no existe. ¿Quisiste decir --help config?" << std::endl;
+                            return 1;
                         }
                         return 0;
 
                     case 4:
-                        if (std::string(argv[2]) == "color") {
+                        if (std::string(argv[2]) == "set.color") {
                             if (std::string(argv[3]) == "verde") { 
-                                
-
-                                    formatted_color = "verde";
-                                    std::ofstream register_config;
-                                    register_config.open("/awesome-cli/config", std::ios::out);
-                                    if (register_config.is_open()) {
-                                        register_config << "color: " << formatted_color;
-                                        register_config.close();
-                                    }
-
-
-                                if (register_config.is_open()) {
-                                    register_config << "color: " << formatted_color;
-                                }
-
-                        std::cout << color << "El color verde es el nuevo color de terminal.";
-                            } else if (std::string(argv[3]) == "gris") {
+                            std::cout << color << "El color verde es el nuevo color de terminal.";
+                            return 0;
+                            } 
+                            else if (std::string(argv[3]) == "gris") {
                                 std::cout << "El color gris es el nuevo color de terminal.";
-                            } else {
-                                std::cout << "Color no reconocido. Usa 'verde' o 'gris'.";
+                                return 0;
+                            } 
+                            else {
+                                std::cout << "El color indicado no existe. ¿Quisiste decir --help config?" << std::endl;
+                                return 1;
                             }
                         }
-                        return 1;
+                        break;
 
                     default:
-                        std::cout << "Comando no reconocido.";
-                        return 1;
+                        if (argc >= 4) { //awesome-cli -c set.color red ->red<->>
+                            std::cout << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help config?" << std::endl;
+                            return 1;
+                        } else { //unhandled error
+                            std::cout << "Error inesperado." << std::endl;
+                            return 1;
+                        }
                     }
+                } else { //checking if entered a command not registered
+                    std::cout << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
                 }
             }
         }

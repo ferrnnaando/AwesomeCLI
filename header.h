@@ -44,9 +44,15 @@ namespace commands {
                                        "Ejemplos:\n"
                                        "  ./awesome-cli --config color,\n"
                                        "  ./awesome-cli --config set.color green,\n"
-                                       "  ./awesome-cli -s ~/Desktop/Dev/file.txt ram.\n\n";
+                                       "  ./awesome-cli -s ~/Desktop/Dev/file.txt ram.\n\n"
+                                       ""
+                                       "Advertencia: Para buscar ayuda sobre un comando específico recuerda introducir el nombre completo sin prefijo ni alias. Ejemplo:\n"
+                                       "  Bien: --help search, -h search,\n"
+                                       "  Mal:  --help -s, -h s.\n\n";
 
-        const char* version_description = " * Versión: 2.1.3\n"
+                                       //the help command just works for commands. not for options
+
+        const char* version_description = " * Versión: 2.1.4\n"
                                           "    // Un CLI eficiente, compacto y versátil capaz de hacer cualquier cosa.\n"
                                           "    // Proyecto de código abierto disponible en: https://github.com/ferrnnaando/\n"
                                           "    // Este proyecto está destinado a ser forkeado, usado y distribuido libremente bajo la MIT License.\n";
