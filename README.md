@@ -30,7 +30,7 @@ cd AwesomeCLI
 ```
 
 2. Compile and run
-3. ```bash
+```bash
    g++ main.cpp -o awesome-cli
    required: sudo ./awesome-cli
    ```
