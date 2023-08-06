@@ -6,6 +6,7 @@
     std::string formatted_color;
 
 int main(int argc, char* argv[]) {
+    std::string error = ANSI_RED + "Error: " + ANSI_RED;
     color = ANSI_COLOR_RESET;
     prefix::entered_exec_name = argv[0];
 
@@ -38,7 +39,7 @@ int main(int argc, char* argv[]) {
 
                         case 3:
                             if (std::string(argv[2]) == "search") {
-                                std::cout << commands::description::search_help_description;
+                                std::cout << commands::description::help_search;
                                 return 0;
                             } else {
                                 std::cout << "-" << argv[2] << ": " << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
@@ -53,6 +54,48 @@ int main(int argc, char* argv[]) {
                                 std::cout << "Error inesperado." << std::endl;
                                 return 1;
                             }
+                    }
+                }
+                else if(argv[1] == prefix::long_prefix + "search" || argv[1] == prefix::short_prefix + "s") {
+                    //std::__is_nothrow_uses_allocator_constructiblees
+                    bool found = false;
+                    switch(argc) {
+                    case 2:
+                        std::cout << "Uso: " << commands::description::help_search;
+                        std::cout << error << "           ^~~~~~~~~~~~~~~~~~" << std::endl;
+                        return 1;
+                    
+                    case 3:
+                        std::cout << "Uso: " << commands::description::help_search;
+                         std::cout << error << "                     ^~~~~~~~" << std::endl;
+                        return 1;
+
+                    case 4:
+                        int lineNum = 0;
+                        std::ifstream path(argv[2]);
+                        std::string search = argv[3];
+                        if(!path) {
+                            std::cout << error << "El archivo indicado no existe, asegurate de indicar el formato de ruta correctamente." << std::endl;
+                            return 1;
+                        }
+
+                        std::string line;
+                        while(std::getline(path, line)) {
+                            if(line.find(search) != std::string::npos) {
+                                found = true;
+                                break;
+                            }
+                            lineNum++;
+                        }
+
+                        if(found) {
+                            std::cout << "Se ha encontrado en la linea número " << lineNum << " el valor introducido " << argv[3] << std::endl;
+                            return 0;
+                        } else {
+                            std::cout << "No encontrado.";
+                            return 1;
+                        }
+                        
                     }
                 } 
                 else if(argv[1] == prefix::long_prefix + "version" || argv[1] == prefix::short_prefix + "v") {

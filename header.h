@@ -1,8 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>
+#include <fstream> //?
 #include <string>
+#include <sstream> //?
 
 #ifdef _WIN32
     #include <windows.h>
@@ -14,6 +15,8 @@
     #define ANSI_COLOR_RESET "\033[0m"
     #define ANSI_COLOR_GREEN "\033[32m"
     #define GREEN "\033[32m"
+    ///#define ANSI_RED "\033[31m"
+    const std::string ANSI_RED = "\033[31m";
 #endif
 
 namespace prefix {
@@ -25,13 +28,10 @@ namespace prefix {
 
 namespace commands {
     namespace description {
-        std::string search_description = "Searchs for the specified text in the specified file text.";
-        const char* search_help_description = "Help for --search subcommand: \n"
-                            "Usage: -search <file_path> <text_to_search>\n"
-                            "Description: Searchs for the specified text in the specified file text.\n"
-                            "Example: -search /path/to/file.txt \"Hello, world!\"\n";
+       std::string help_search = "-s, --search <archivo> <string> Busca una cadena de carácteres en un archivo de texto.\n";
 
-        const char* help_description = "Uso: ./awesome-cli --comando / -alias <opcion> <otra opcion>\n\n"
+        const char* help_description = //"Instalación: sudo ./awesome-cli --install"
+                                       "Uso: sudo ./awesome-cli --comando / -alias <opcion> <otra opcion>\n\n"
                                        ""
                                        "Opciones:\n"
                                        "  -h, --help                        Mostrar ayuda,\n"
