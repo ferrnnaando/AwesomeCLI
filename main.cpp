@@ -3,6 +3,31 @@
 //<filesystem> what is lol
 
     std::string color;
+    void print_hardware_info() {
+    std::cout << R"(
+╭───────────────────────────────────────╮
+│        AwesomeCLI   Hardware Info     │
+╰───────────────────────────────────────╯
+
+            Información de CPU:                              Consumo de RAM:
+  Modelo: )" << cpu.model_name << R"(
+  Núcleos: )" << cpu.cores << R"(                                            )" << ram_usage << R"(
+
+Información de GPU:
+  )" << gpu.gpu_info << R"(
+
+OS Info:
+  )" << info_os << R"(
+
+Disk Info:
+  )" << disk.disk_usage << R"(
+
+Network Info:
+  1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+      inet 127.0.0.1/8 scope host lo
+      valid_lft forever preferred_lft forever
+)" << std::endl;
+}
 
 int main(int argc, char* argv[]) {
     std::string error = ANSI_RED + "Error: " + ANSI_RED;
@@ -36,6 +61,10 @@ int main(int argc, char* argv[]) {
                             return 0;
 
                         case 3:
+                            if(std::string(argv[2]) == "help") {
+                                std::cout << error << "¿Quisiste decir --help?" << std::endl;
+                                return 1;
+                            }
                             if (std::string(argv[2]) == "search") {
                                 std::cout << commands::description::help_search;
                                 return 0;
@@ -160,7 +189,167 @@ int main(int argc, char* argv[]) {
                             return 1;
                         }
                     }
-                } else { //checking if entered a command not registered
+                } 
+                else if(argv[1] == prefix::long_prefix + "track" || argv[1] == prefix::short_prefix + "t") {
+                    switch(argc) {
+                        case 2:
+
+                            std::ifstream cpuinfo("/proc/cpuinfo");
+                            
+                            cpu.found_cpu = false;
+
+                            while (std::getline(cpuinfo, line8)) {
+                                size_t delimiter_pos = line8.find(':');
+
+                                if (line8.find("model name") != std::string::npos) {
+                                    if (delimiter_pos != std::string::npos) {
+                                        cpu.model_name = line8.substr(delimiter_pos + 2); // Skip ": "	
+                                        cpu.found_cpu = true;
+                                    }
+                                } else if(line8.find("cpu cores") != std::string::npos) { //what is npos 
+                                        if(delimiter_pos != std::string::npos) {
+                                            cpu.cores = line8.substr(delimiter_pos + 2);
+                                        }
+                                    }
+                            }
+
+                            std::ifstream ram_info("/proc/meminfo");
+                            ram.found_ram = false;
+
+                            while(std::getline(ram_info, line9)) {
+                            size_t delimiter_pos = line9.find(':');
+
+                            if (line9.find("MemTotal") != std::string::npos) {
+                                if (delimiter_pos != std::string::npos) {
+                                    ram.found_ram = true;
+                                    std::istringstream iss(line9);
+                                    std::string memtotal_identifier;
+                                    long memtotal_value;
+
+                                    iss >> memtotal_identifier >> memtotal_value;
+                                    ram.ram_total_literal = memtotal_value;
+
+                                    if (memtotal_value > 1000000) {
+                                        double value_gb = static_cast<double>(memtotal_value) / (1024.0 * 1024.0);
+                                        ram.ram_total = value_gb;
+                                    } else {
+                                        double value_mb = static_cast<double>(memtotal_value) / 1024.0;
+                                        ram.ram_total = value_mb;
+                                    }
+                                }
+                            } else if (line9.find("MemFree") != std::string::npos) {
+                                if (delimiter_pos != std::string::npos) {
+                                    std::istringstream iss(line9);
+                                    std::string memfree_identifier;
+                                    double memfree_value;
+
+                                    iss >> memfree_identifier >> memfree_value;
+                                    double memused_identifier = ram.ram_total_literal - memfree_value;
+
+                                    if (memused_identifier > 1000000) {
+                                        double total = static_cast<double>(memused_identifier) / (1024.0 * 1024.0);
+                                        ram.ram_used = total;
+                                    } else {
+                                        double total = static_cast<double>(memused_identifier) / 1024.0;
+                                        ram.ram_used = total;
+                                    }
+                                }
+                            } else if (line9.find("MemAvailable") != std::string::npos) {
+                                if (delimiter_pos != std::string::npos) {
+                                    std::istringstream iss(line9);
+                                    std::string memav_identifier;
+                                    long memav_value;
+
+                                    iss >> memav_identifier >> memav_value;
+
+                                    double memused_identifier = ram.ram_total_literal - memav_value;
+                                    ram.ram_percent = (memused_identifier / ram.ram_total_literal) * 100.0;
+                                    //ram.ram_percent = ram_percent;
+                                    //if(ram.ram_percent)
+                                }
+                            }
+                        }
+
+                        std::ifstream osname("/etc/os-release");
+                        os.found_os = false;
+
+                        //if(osname.is_open()) {
+                            while(std::getline(osname, line10)) {
+                                size_t pos;
+                                while ((pos = line10.find("\"")) != std::string::npos) {
+                                    line10.erase(pos, 1);
+                                }
+
+                                if(line10.find("PRETTY_NAME") != std::string::npos) {
+                                    bool found_os_name = true;
+                                    std::string delimiter = "=";
+                                    size_t delimiter_pos = line10.find(delimiter);
+                                    if (delimiter_pos != std::string::npos) {
+                                        std::string os_name = line10.substr(delimiter_pos + delimiter.length());
+                                        size_t start_pos = os_name.find_first_not_of(" \"");
+                                        size_t end_pos = os_name.find_last_not_of(" \"");
+                                        if (start_pos != std::string::npos && end_pos != std::string::npos) {
+                                            os_name = os_name.substr(start_pos, end_pos - start_pos + 1);
+                                        }
+
+                                os.os_name = os_name;
+                            }
+                        }
+                    }
+                        os.found_os = true;
+
+                        gpu.gpu_info = exec("lspci | grep -E 'VGA|3D'");
+
+                        if(cpu.found_cpu) { //is this a good way to check true or is better a cpu.found_cpu
+                            info_cpu = "```Modelo: " + cpu.model_name + " || Núcleos: " + cpu.cores + " ```";
+                        }
+
+                        if(ram.found_ram)  {
+                            std::ostringstream ram_percentStream, ram_usedStream, ram_totalStream;
+                            ram_percentStream << std::fixed << std::setprecision(2) << ram.ram_percent;
+                            ram_usedStream << std::fixed << std::setprecision(2) << ram.ram_used;
+                            ram_totalStream << std::fixed << std::setprecision(2) << ram.ram_total;
+
+                            ram_usage = ram_percentStream.str() + "% [" + ram_usedStream.str() + " / " + ram_totalStream.str() + " GB]"; //should add dynamic memory value
+                        }
+
+                        if(os.found_os) {
+                            info_os = "```" + os.os_model + " || " + os.os_name + "```";
+                        }
+
+                        unsigned long long prevIdle = 0;
+                        unsigned long long prevTotal = 0;
+                        double cpuUsage = calculateCpuUsage(prevIdle, prevTotal);
+                        std::ostringstream cpuStream;
+                        cpuStream << std::fixed << std::setprecision(2) << cpuUsage;
+
+                        formated_consum = "```CPU: " + cpuStream.str() + "% \nRAM: " + ram_usage + " ```";
+
+                        if(cpuUsage < 50) {
+                            formated_bot_status = "```Eficiente.```";
+                        } 
+                        else if(cpuUsage > 50) {
+                            formated_bot_status = "```Carga moderada.```";
+                        } 
+                        else if(cpuUsage > 70) {
+                            formated_bot_status = "```Carga alta.```";
+                        } 
+                        else if(cpuUsage > 90) {
+                            formated_bot_status = " ```Sobrecarga / carga excesiva.```";
+                        } else {
+                            formated_bot_status = " ```No reconocido.```";
+                        }
+                    
+                        disk.disk_usage = exec("df -h /");
+                        formated_disk_usage = "```" + disk.disk_usage + "```";
+
+                        network.network_usage = exec("ip -4 addr show $(ip -4 route get 8.8.8.8 | awk '{print $5}')");
+                        formated_network_usage = "```" + network.network_usage + "```";
+                        print_hardware_info();
+                        return 0;
+                    }
+                }
+                else { //checking if entered a command not registered
                     std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
                     return 1;
                 }

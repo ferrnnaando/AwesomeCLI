@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <fstream> //?
 #include <string>
@@ -13,8 +12,54 @@
     #include <unistd.h>
     #include <chrono>
     #include <thread>
+    #include <cstdio>
+	#include <memory>
+	#include <stdexcept>
+	#include <sys/sysinfo.h>
+	#include <sys/statvfs.h>
+	#include <iomanip>
+
     const std::string ANSI_RED = "\033[31m";
 #endif
+
+struct system_info {
+		std::string model_name; //cpu
+		std::string cores; //cpu
+		std::string gpu_info; //gpu
+		double ram_total; //ram
+		double ram_used; //ram
+		double ram_percent; //ram
+		long ram_total_literal; //ram
+		long memav_value; //ram
+		std::string os_name; //os info
+		std::string os_model = "Linux"; //os info
+		std::string disk_usage; //disk info
+		std::string network_usage; //network info
+
+		bool found_cpu, found_gpu, found_ram, found_os;
+};
+
+struct statvfs buffer;
+
+system_info cpu;
+system_info gpu;
+system_info ram;
+system_info os;
+system_info disk;
+system_info network;
+std::string line8, line9, line10;
+
+std::string info_cpu;
+std::string info_gpu;
+std::string info_os;
+std::string info_ram;
+std::string ram_usage;
+std::string formated_consum;
+std::string formated_bot_status;
+std::string status_title;
+std::string formated_disk_usage;
+std::string formated_network_usage;
+std::string formated_uptime;
 
 struct config_file;
 
@@ -40,7 +85,8 @@ namespace commands {
                                        "  -c, --config                      Muestra tu configuración y modifícala.\n\n"
                                        ""
                                        "Comandos:\n"
-                                       "  -s, --search <archivo> <string>   Busca una cadena de carácteres en un archivo de texto.\n\n"
+                                       "  -s, --search <archivo> <string>   Busca una cadena de carácteres en un archivo de texto,\n"
+                                       "  -t, --track                       Muestra información del hardware, drivers y componentes.\n\n"
                                        ""
                                        "Ejemplos:\n"
                                        "  ./awesome-cli --config color,\n"
