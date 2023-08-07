@@ -75,6 +75,7 @@ namespace prefix {
 namespace commands {
     namespace description {
        std::string help_search = "-s, --search <archivo> <string> Busca una cadena de carácteres en un archivo de texto.\n";
+       std::string help_track =  "  -t, --track Muestra información del hardware, drivers y componentes.\n";
 
         const char* help_description = //"Instalación: sudo ./awesome-cli --install"
                                        "Uso: sudo ./awesome-cli --comando / -alias <opcion> <otra opcion>\n\n"

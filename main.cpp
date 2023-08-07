@@ -9,24 +9,19 @@
 │        AwesomeCLI   Hardware Info     │
 ╰───────────────────────────────────────╯
 
-            Información de CPU:                              Consumo de RAM:
-  Modelo: )" << cpu.model_name << R"(
-  Núcleos: )" << cpu.cores << R"(                                            )" << ram_usage << R"(
-
-Información de GPU:
+                                    Información de GPU:
   )" << gpu.gpu_info << R"(
 
-OS Info:
-  )" << info_os << R"(
+            Información de CPU:                                 Consumo:
+  Modelo: )" << cpu.model_name << R"(       RAM: )" << ram_usage << R"(
+                Núcleos: )" << cpu.cores << R"(                                     )" << formated_consum << R"(%
 
-Disk Info:
-  )" << disk.disk_usage << R"(
+        Información del sistema:                              Estado:
+      )" << info_os << R"(                            )" << formated_bot_status << R"(
 
-Network Info:
-  1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-      inet 127.0.0.1/8 scope host lo
-      valid_lft forever preferred_lft forever
-)" << std::endl;
+                                    Otros:
+                                      ./awesome-cli -t wired
+                                      ./awesome-cli -t part )" << std::endl;
 }
 
 int main(int argc, char* argv[]) {
@@ -68,7 +63,11 @@ int main(int argc, char* argv[]) {
                             if (std::string(argv[2]) == "search") {
                                 std::cout << commands::description::help_search;
                                 return 0;
-                            } else {
+                            }
+                            else if(std::string(argv[2]) == "track") {
+                                std::cout << commands::description::help_track;
+                            }
+                            else {
                                 std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
                                 return 1;
                             }
@@ -314,7 +313,7 @@ int main(int argc, char* argv[]) {
                         }
 
                         if(os.found_os) {
-                            info_os = "```" + os.os_model + " || " + os.os_name + "```";
+                            info_os = os.os_model + " || " + os.os_name;
                         }
 
                         unsigned long long prevIdle = 0;
@@ -323,21 +322,21 @@ int main(int argc, char* argv[]) {
                         std::ostringstream cpuStream;
                         cpuStream << std::fixed << std::setprecision(2) << cpuUsage;
 
-                        formated_consum = "```CPU: " + cpuStream.str() + "% \nRAM: " + ram_usage + " ```";
+                        formated_consum = "CPU: " + cpuStream.str();
 
                         if(cpuUsage < 50) {
-                            formated_bot_status = "```Eficiente.```";
+                            formated_bot_status = "Eficiente.";
                         } 
                         else if(cpuUsage > 50) {
-                            formated_bot_status = "```Carga moderada.```";
+                            formated_bot_status = "Carga moderada.";
                         } 
                         else if(cpuUsage > 70) {
-                            formated_bot_status = "```Carga alta.```";
+                            formated_bot_status = "Carga alta.";
                         } 
                         else if(cpuUsage > 90) {
-                            formated_bot_status = " ```Sobrecarga / carga excesiva.```";
+                            formated_bot_status = " Sobrecarga / carga excesiva.";
                         } else {
-                            formated_bot_status = " ```No reconocido.```";
+                            formated_bot_status = " No reconocido.";
                         }
                     
                         disk.disk_usage = exec("df -h /");
