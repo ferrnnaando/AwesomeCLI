@@ -31,7 +31,7 @@ cd AwesomeCLI
 
 2. Compile and run.
 ```bash
-   g++ main.cpp -o awesome-cli
+   g++ main.cpp structure/structure.cpp -o awesome-cli
    required: sudo ./awesome-cli --help
    ```
    
