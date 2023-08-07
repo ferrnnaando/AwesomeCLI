@@ -29,10 +29,20 @@ git clone https://github.com/your-username/AwesomeCLI.git
 cd AwesomeCLI
 ```
 
-2. Compile and run
+2. Compile and run.
 ```bash
    g++ main.cpp -o awesome-cli
-   required: sudo ./awesome-cli
+   required: sudo ./awesome-cli --help
    ```
    
 3. Feel free to edit and use it for your personal use or developing apps with this main structure that will reserve you a lot of time.
+
+# Examples
+![image](https://github.com/ferrnnaando/AwesomeCLI/assets/77246868/e1640e69-18c5-4e57-aee0-76bc952679c3)
+
+![image](https://github.com/ferrnnaando/AwesomeCLI/assets/77246868/baaced2d-2fab-4266-a29b-837c80d817ab)
+
+![image](https://github.com/ferrnnaando/AwesomeCLI/assets/77246868/baa31ef2-f879-4516-a1c6-6c1cdec311ac)
+
+
+
