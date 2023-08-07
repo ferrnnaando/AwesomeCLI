@@ -20,6 +20,11 @@
 	#include <iomanip>
 
     const std::string ANSI_RED = "\033[31m";
+    const std::string ANSI_YELLOW = "\033[33m";
+    const std::string ANSI_RESET = "\033[0m";
+    std::string error = ANSI_RED + "Error: " + ANSI_RED;
+    std::string warning = ANSI_YELLOW + "Advertencia: " + ANSI_YELLOW;
+    std::string color = ANSI_RESET;
 #endif
 
 struct system_info {
@@ -75,28 +80,30 @@ namespace prefix {
 namespace commands {
     namespace description {
        std::string help_search = "-s, --search <archivo> <string> Busca una cadena de carácteres en un archivo de texto.\n";
-       std::string help_track =  "  -t, --track Muestra información del hardware, drivers y componentes.\n";
+       std::string help_track =  "-t, --track Muestra información del hardware, drivers y componentes.\n";
+       std::string help_stress = "-c, --stress <segundos / loop> <potencia: high / medium / low> Estresa la CPU a tu gusto.\n";
 
         const char* help_description = //"Instalación: sudo ./awesome-cli --install"
-                                       "Uso: sudo ./awesome-cli --comando / -alias <opcion> <otra opcion>\n\n"
+                                       " Uso: sudo ./awesome-cli --comando / -alias <opcion> <otra opcion>\n\n"
                                        ""
-                                       "Opciones:\n"
-                                       "  -h, --help                        Mostrar ayuda,\n"
-                                       "  -V, --version                     Mostrar versión,\n"
-                                       "  -c, --config                      Muestra tu configuración y modifícala.\n\n"
+                                       " Opciones:\n"
+                                       "   -h, --help       Muestra este mensaje de ayuda,\n"
+                                       "   -c, --config     Muestra tu configuración y modifícala.\n\n"
+                                       "   -V, --version    Mostrar la versión del programa e información,\n"
                                        ""
-                                       "Comandos:\n"
-                                       "  -s, --search <archivo> <string>   Busca una cadena de carácteres en un archivo de texto,\n"
-                                       "  -t, --track                       Muestra información del hardware, drivers y componentes.\n\n"
+                                       " Comandos:\n"
+                                       "   -t, --track                        Muestra información del hardware, drivers y componentes,\n"
+                                       "   -s, --search <archivo> <string>    Busca una cadena de carácteres en un archivo de texto,\n"
+                                       "   -c, --stress <segundos / loop> <potencia: high / medium / low> Estresa la CPU a tu gusto.\n\n"
                                        ""
-                                       "Ejemplos:\n"
-                                       "  ./awesome-cli --config color,\n"
-                                       "  ./awesome-cli --config set.color green,\n"
-                                       "  ./awesome-cli -s ~/Desktop/Dev/file.txt ram.\n\n"
+                                       " Ejemplos:\n"
+                                       "   ./awesome-cli --config color,\n"
+                                       "   ./awesome-cli --config set.color green,\n"
+                                       "   ./awesome-cli -s ~/Desktop/Dev/file.txt ram.\n\n"
                                        ""
-                                       "Advertencia: Para buscar ayuda sobre un comando específico recuerda introducir el nombre completo sin prefijo ni alias. Ejemplo:\n"
-                                       "  Bien: --help search, -h search,\n"
-                                       "  Mal:  --help -s, -h s.\n\n";
+                                       " Advertencia: Para buscar ayuda sobre un comando específico recuerda introducir el nombre completo sin prefijo ni alias. Ejemplo:\n"
+                                       "   Bien: --help search, -h search,\n"
+                                       "   Mal:  --help -s, -h s.\n\n";
 
                                        //the help command just works for commands. not for options
 

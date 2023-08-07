@@ -2,13 +2,8 @@
 #include "structure/structure.h"
 //<filesystem> what is lol
 
-    std::string color;
     void print_hardware_info() {
     std::cout << R"(
-╭───────────────────────────────────────╮
-│        AwesomeCLI   Hardware Info     │
-╰───────────────────────────────────────╯
-
                                     Información de GPU:
   )" << gpu.gpu_info << R"(
 
@@ -25,7 +20,6 @@
 }
 
 int main(int argc, char* argv[]) {
-    std::string error = ANSI_RED + "Error: " + ANSI_RED;
     prefix::entered_exec_name = argv[0];
 
     if(prefix::entered_exec_name.find(prefix::program_name) == std::string::npos) {
@@ -66,6 +60,9 @@ int main(int argc, char* argv[]) {
                             }
                             else if(std::string(argv[2]) == "track") {
                                 std::cout << commands::description::help_track;
+                            }
+                            else if(std::string(argv[2]) == "stress") {
+                                std::cout << commands::description::help_stress;
                             }
                             else {
                                 std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
@@ -191,10 +188,16 @@ int main(int argc, char* argv[]) {
                 } 
                 else if(argv[1] == prefix::long_prefix + "track" || argv[1] == prefix::short_prefix + "t") {
                     switch(argc) {
-                        case 2:
+                         default:
+                        if(argc >= 3) {
+                            std::cout << warning << "Ignorando cualquier parámetro despues de " << argv[1] << "." << std::endl;
+                        }
 
-                            std::ifstream cpuinfo("/proc/cpuinfo");
+                        std::cout << color;
+
+                        case 2:
                             
+                            std::ifstream cpuinfo("/proc/cpuinfo");
                             cpu.found_cpu = false;
 
                             while (std::getline(cpuinfo, line8)) {
@@ -344,8 +347,10 @@ int main(int argc, char* argv[]) {
 
                         network.network_usage = exec("ip -4 addr show $(ip -4 route get 8.8.8.8 | awk '{print $5}')");
                         formated_network_usage = "```" + network.network_usage + "```";
+
                         print_hardware_info();
                         return 0;
+                    
                     }
                 }
                 else { //checking if entered a command not registered
