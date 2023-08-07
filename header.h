@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream> //?
 #include <vector>
+#include <stdlib.h>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -88,8 +89,8 @@ namespace commands {
                                        ""
                                        " Opciones:\n"
                                        "   -h, --help       Muestra este mensaje de ayuda,\n"
-                                       "   -c, --config     Muestra tu configuración y modifícala.\n\n"
-                                       "   -V, --version    Mostrar la versión del programa e información,\n"
+                                       "       --config     Muestra tu configuración y modifícala,\n"
+                                       "   -V, --version    Mostrar la versión del programa e información.\n"
                                        ""
                                        " Comandos:\n"
                                        "   -t, --track                        Muestra información del hardware, drivers y componentes,\n"

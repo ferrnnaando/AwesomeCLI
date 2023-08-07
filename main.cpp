@@ -2,6 +2,10 @@
 #include "structure/structure.h"
 //<filesystem> what is lol
 
+    void cpu_stress_function() {
+        int* ptr = (int*) malloc(10000000000000);
+    }
+
     void print_hardware_info() {
     std::cout << R"(
                                     Información de GPU:
@@ -144,7 +148,7 @@ int main(int argc, char* argv[]) {
                     std::cout << commands::description::version_description;
                     return 0;
                 }
-                else if(argv[1] == prefix::long_prefix + "config" || argv[1] == prefix::short_prefix + "c") {
+                else if(argv[1] == prefix::long_prefix + "config") {
                    switch (argc) {
                     case 2:
                         std::cout << "show the config.";
@@ -196,7 +200,7 @@ int main(int argc, char* argv[]) {
                         std::cout << color;
 
                         case 2:
-                            
+//warning                            
                             std::ifstream cpuinfo("/proc/cpuinfo");
                             cpu.found_cpu = false;
 
@@ -352,6 +356,24 @@ int main(int argc, char* argv[]) {
                         return 0;
                     
                     }
+                }
+                else if(argv[1] == prefix::long_prefix + "stress" || argv[1] == prefix::short_prefix + "c") {
+                    while(true) {
+                        unsigned int num_cores = std::thread::hardware_concurrency();
+    std::vector<std::thread> threads;
+
+    // Start a thread for each core
+    for (unsigned int i = 0; i < num_cores; ++i) {
+        threads.push_back(std::thread(cpu_stress_function));
+    }
+
+    // Join all threads to avoid termination of the program
+    for (auto& thread : threads) {
+        thread.join();
+    }
+                         
+                    }
+                    return 0;
                 }
                 else { //checking if entered a command not registered
                     std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
