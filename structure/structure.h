@@ -15,10 +15,11 @@
 	#include <iomanip>
 
 bool is_sudo();
-
 bool files_exists(const std::string& text);
 void config_files();
 bool startsWith(const char* argv, const char* prefix);
 double calculateCpuUsage(unsigned long long& prevIdle, unsigned long long& prevTotal);
 std::string exec(const char* cmd);
+void stress_loop();
+void stress_count(int& count_maxValue);
 void print_hardware_info();

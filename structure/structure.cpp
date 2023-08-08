@@ -52,3 +52,24 @@ std::string exec(const char* cmd) {
     }
     return result;
 }
+
+void stress_loop() {
+    double* i = 0;
+    while(true){
+        (*i++) + 3.14;
+    }
+}
+
+void stress_count(int& count_maxValue) {
+    int counter = 0;
+    double* i = 0;
+    auto clock = std::chrono::steady_clock::now();
+
+    counter++;
+    while(counter < count_maxValue) {
+        (*i++) + 3.14;
+
+        auto current_time = std::chrono::steady_clock::now();
+        counter = std::chrono::duration_cast<std::chrono::seconds>(current_time - clock).count();
+    } 
+}
