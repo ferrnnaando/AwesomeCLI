@@ -2,26 +2,8 @@
 #include "structure/structure.h"
 //<filesystem> what is lol
 
-    void cpu_stress_function() {
-        int* ptr = (int*) malloc(10000000000000);
-    }
-
-    void print_hardware_info() {
-    std::cout << R"(
-                                    Información de GPU:
-  )" << gpu.gpu_info << R"(
-
-            Información de CPU:                                 Consumo:
-  Modelo: )" << cpu.model_name << R"(       RAM: )" << ram_usage << R"(
-                Núcleos: )" << cpu.cores << R"(                                     )" << formated_consum << R"(%
-
-        Información del sistema:                              Estado:
-      )" << info_os << R"(                            )" << formated_bot_status << R"(
-
-                                    Otros:
-                                      ./awesome-cli -t wired
-                                      ./awesome-cli -t part )" << std::endl;
-}
+void print_hardware_info();
+void stress();
 
 int main(int argc, char* argv[]) {
     prefix::entered_exec_name = argv[0];
@@ -50,7 +32,7 @@ int main(int argc, char* argv[]) {
                 if (argv[1] == prefix::long_prefix + "help" || argv[1] == prefix::short_prefix + "h") { //|| allows to check for long command version prefix and the alias.
                     switch (argc) {
                         case 2:
-                            std::cout << color << commands::description::help_description; //print the main help const char message
+                            std::cout << ANSI_RESET << commands::description::help_description; //print the main help const char message
                             return 0;
 
                         case 3:
@@ -166,7 +148,7 @@ int main(int argc, char* argv[]) {
                     case 4:
                         if (std::string(argv[2]) == "set.color") {
                             if (std::string(argv[3]) == "verde") { 
-                            std::cout << color << "El color verde es el nuevo color de terminal.";
+                            std::cout << ANSI_RESET << "El color verde es el nuevo color de terminal.";
                             return 0;
                             } 
                             else if (std::string(argv[3]) == "gris") {
@@ -197,7 +179,7 @@ int main(int argc, char* argv[]) {
                             std::cout << warning << "Ignorando cualquier parámetro despues de " << argv[1] << "." << std::endl;
                         }
 
-                        std::cout << color;
+                        std::cout << ANSI_RESET;
 
                         case 2:
 //warning                            
@@ -358,22 +340,55 @@ int main(int argc, char* argv[]) {
                     }
                 }
                 else if(argv[1] == prefix::long_prefix + "stress" || argv[1] == prefix::short_prefix + "c") {
-                    while(true) {
-                        unsigned int num_cores = std::thread::hardware_concurrency();
-    std::vector<std::thread> threads;
+                    switch(argc) {
+                    case 2:
+                        std::cout << "Uso: " << commands::description::help_stress;
+                        std::cout << error << "           ^~~~~~~~~~~~~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
+                        return 1;
+                    
+                    case 3:
+                        if(std::string(argv[2]) == "loop") { //awesome-cli -c loop
+                            std::cout << warning << ANSI_RESET << "Estresando procesador con " << ANSI_RED << ANSI_BOLD << NUM_CORES << ANSI_RESET << " núcleos " << ANSI_RED << ANSI_BOLD << "indefinidamente" << ANSI_RESET << ".. (Pulsa CTRL + C para abortar)" << std::endl;
+                            std::thread thread[NUM_CORES];  
+                        
+                            for(int i = 0; i < NUM_CORES; i++) {
+                                thread[i] = std::thread(stress_loop);
+                            }
 
-    // Start a thread for each core
-    for (unsigned int i = 0; i < num_cores; ++i) {
-        threads.push_back(std::thread(cpu_stress_function));
-    }
+                            for(int i = 0; i < NUM_CORES; i++) {
+                                thread[i].join();
+                            }
 
-    // Join all threads to avoid termination of the program
-    for (auto& thread : threads) {
-        thread.join();
-    }
-                         
+                            return 0;
+                        } else {
+                            try {     
+                                contador_top = std::stoi(argv[2]);
+
+                            } catch(const std::invalid_argument&) { //why const
+                                std::cout << error << "El valor introducido no parece ser un número entero. ¿Quisiste decir --help stress?" << std::endl;
+                                return 1;
+                            }
+
+                            if(contador_top <= 0) {
+                                std::cout << error << "El valor introducido no parece ser válido, debe estar en el rango de segundos 5 - 1000. ¿Quisiste decir --help stress?" << std::endl;
+                                return 1;
+                            }
+
+                            std::cout << warning << ANSI_RESET << "Estresando procesador con " << ANSI_RED << ANSI_BOLD << NUM_CORES << ANSI_RESET << " núcleos durante " << ANSI_RED << ANSI_BOLD << contador_top << ANSI_RESET << " segundos.. (Pulsa CTRL + C para abortar)" << std::endl;
+                            std::thread thread[NUM_CORES];  
+                        
+                            for(int i = 0; i < NUM_CORES; i++) {
+                                thread[i] = std::thread(std::bind(stress_count, contador_top));
+                            }
+
+                            for(int i = 0; i < NUM_CORES; i++) {
+                                thread[i].join();
+                            }
+
+                            return 0;
+                        }        
                     }
-                    return 0;
                 }
                 else { //checking if entered a command not registered
                     std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
@@ -385,69 +400,19 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+void print_hardware_info() {
+    std::cout << R"(
+                                    Información de GPU:
+    )" << gpu.gpu_info << R"(
 
+            Información de CPU:                                 Consumo:
+    Modelo: )" << cpu.model_name << R"(       RAM: )" << ram_usage << R"(
+                Núcleos: )" << cpu.cores << R"(                                     )" << formated_consum << R"(%
 
+        Información del sistema:                              Estado:
+        )" << info_os << R"(                            )" << formated_bot_status << R"(
 
-
-
-/*#ifdef _WIN32
-    // Code specific to Windows platform
-    #include <windows.h>
-#endif
-
-#ifdef _MSC_VER
-    #if _MSC_VER >= 1929
-        // Code for Visual C++ 2019 and newer
-    #else
-        // Code for older versions of Visual C++
-    #endif
-#endif*/
-
-/*int main() {
-    int numero, contador = 0;
-    do {
-        cout << "Introduce un numero: ";
-        cin >> numero;
-
-        if(numero >= 1){
-            contador++;
-            system("clear");
-        } else {
-            break;
-        }
-    } while(numero != 0);
-
-    if(contador > 1) {
-        cout <<"Has arruinado la cadena cuando llevabas " << contador << " valores introducidos correctamente.\n";
-    } else if (contador == 1) { 
-        cout <<"Has arruinado la cadena cuando llevabas " << contador << " valor introducido correctamente.\n";
-     } else {
-        cout << "No se ha guardado ningun numero porque no has introducido ninguno correctamente.\n";
-     }
-
-    double dynamic_double[] = {3.7, 2.9, 1.2, 1.1, 1.0, 392.5};
-    int thrD_array[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-
-    std::cout << "---------" << std::endl;
-    for(int a = 0; a < 3; a++) {
-        std::cout << "| ";
-        for(int b = 0; b < 3; b++) {
-            
-            std::cout << thrD_array[a][b] << " ";
-        }
-        std::cout << "|" << std::endl;
-    }
-    std::cout << "---------" << std::endl;
-
-    std::cout << std::endl;
-
-    for(const int (&row)[3] : thrD_array) {
-        for(const int &n : row) {
-            cout << n << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    return 0;
-    }
-*/
+                                    Otros:
+                                        ./awesome-cli -t wired
+                                        ./awesome-cli -t part )" << std::endl;
+}
