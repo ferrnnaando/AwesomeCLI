@@ -4,7 +4,11 @@
 #include <string>
 #include <sstream> //?
 #include <vector>
+#include <thread>
 #include <stdlib.h>
+#include <functional>
+
+#define NUM_CORES std::thread::hardware_concurrency()
 
 #ifdef _WIN32
     #include <windows.h>
@@ -12,7 +16,6 @@
 #else
     #include <unistd.h>
     #include <chrono>
-    #include <thread>
     #include <cstdio>
 	#include <memory>
 	#include <stdexcept>
@@ -23,11 +26,19 @@
     const std::string ANSI_RED = "\033[31m";
     const std::string ANSI_YELLOW = "\033[33m";
     const std::string ANSI_RESET = "\033[0m";
+    const std::string ANSI_UNDERLINE = "\033[4m";
+    const std::string ANSI_ITALIC = "\033[3m";
+    const std::string ANSI_BOLD = "\033[1m";
     std::string error = ANSI_RED + "Error: " + ANSI_RED;
     std::string warning = ANSI_YELLOW + "Advertencia: " + ANSI_YELLOW;
-    std::string color = ANSI_RESET;
 #endif
 
+int contador_top = 0;
+int seconds = 0;
+
+struct config_file;
+struct hardware_info;
+struct statvfs buffer;
 struct system_info {
 		std::string model_name; //cpu
 		std::string cores; //cpu
@@ -45,8 +56,6 @@ struct system_info {
 		bool found_cpu, found_gpu, found_ram, found_os;
 };
 
-struct statvfs buffer;
-
 system_info cpu;
 system_info gpu;
 system_info ram;
@@ -54,7 +63,6 @@ system_info os;
 system_info disk;
 system_info network;
 std::string line8, line9, line10;
-
 std::string info_cpu;
 std::string info_gpu;
 std::string info_os;
@@ -66,10 +74,6 @@ std::string status_title;
 std::string formated_disk_usage;
 std::string formated_network_usage;
 std::string formated_uptime;
-
-struct config_file;
-
-struct hardware_info;
 
 namespace prefix {
         std::string short_prefix = "-";
