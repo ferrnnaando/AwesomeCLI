@@ -33,6 +33,10 @@
     std::string warning = ANSI_YELLOW + "Advertencia: " + ANSI_YELLOW;
 #endif
 
+struct is_integer {
+    bool is;
+};
+
 int contador_top = 0;
 int seconds = 0;
 
@@ -84,9 +88,11 @@ namespace prefix {
 
 namespace commands {
     namespace description {
-       std::string help_search = "-s, --search <archivo> <string> Busca una cadena de carácteres en un archivo de texto.\n";
-       std::string help_track =  "-t, --track Muestra información del hardware, drivers y componentes.\n";
-       std::string help_stress = "-c, --stress <segundos / loop> <potencia: high / medium / low> Estresa la CPU a tu gusto.\n";
+        std::string help_search = "-s, --search <archivo> <string> Busca una cadena de carácteres en un archivo de texto.\n";
+        std::string help_track =  "-t, --track Muestra información del hardware, drivers y componentes.\n";
+        std::string help_stress = "-c, --stress <segundos / loop> <target:cpu / ram> Estresa ciertos componentes del hardware.\n";
+        std::string help_encrypt = "    --encrypt <texto> <clave> Encripta un codigo con una clave secreta. Si la pierdes, será imposible descifrar el texto.\n";
+        std::string help_decrypt = "    --decrypt <cifrado> <clave> Desencripta un codigo con una clave secreta.\n";
 
         const char* help_description = //"Instalación: sudo ./awesome-cli --install"
                                        " Uso: sudo ./awesome-cli --comando / -alias <opcion> <otra opcion>\n\n"
@@ -99,6 +105,8 @@ namespace commands {
                                        " Comandos:\n"
                                        "   -t, --track                        Muestra información del hardware, drivers y componentes,\n"
                                        "   -s, --search <archivo> <string>    Busca una cadena de carácteres en un archivo de texto,\n"
+                                       "       --encrypt <texto> <clave>      Encripta un codigo con una clave secreta. Si la pierdes, será imposible descifrar el texto,\n"
+                                       "       --decrypt <cifrado> <clave>    Desencripta un codigo con una clave secreta,\n"
                                        "   -c, --stress <segundos / loop> <potencia: high / medium / low> Estresa la CPU a tu gusto.\n\n"
                                        ""
                                        " Ejemplos:\n"

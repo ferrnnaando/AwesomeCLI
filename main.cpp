@@ -1,12 +1,14 @@
 #include "header.h"
 #include "structure/structure.h"
+#include "encrypt/encrypt.h"
+
 //<filesystem> what is lol
 
-void print_hardware_info();
 void stress();
 
 int main(int argc, char* argv[]) {
     prefix::entered_exec_name = argv[0];
+    is_integer integer;
 
     if(prefix::entered_exec_name.find(prefix::program_name) == std::string::npos) {
         std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"" + prefix::program_name + "\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
@@ -181,8 +183,7 @@ int main(int argc, char* argv[]) {
 
                         std::cout << ANSI_RESET;
 
-                        case 2:
-//warning                            
+                        case 2:                            
                             std::ifstream cpuinfo("/proc/cpuinfo");
                             cpu.found_cpu = false;
 
@@ -334,35 +335,103 @@ int main(int argc, char* argv[]) {
                         network.network_usage = exec("ip -4 addr show $(ip -4 route get 8.8.8.8 | awk '{print $5}')");
                         formated_network_usage = "```" + network.network_usage + "```";
 
-                        print_hardware_info();
                         return 0;
                     
                     }
                 }
                 else if(argv[1] == prefix::long_prefix + "stress" || argv[1] == prefix::short_prefix + "c") {
                     switch(argc) {
+                     default:
+                        if (argc >= 4) {
+                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                            return 1;
+                        }
+                        else {
+                            std::cout << error << "Error inesperado." << std::endl;
+                            return 1;
+                        }
+
                     case 2:
                         std::cout << "Uso: " << commands::description::help_stress;
-                        std::cout << error << "           ^~~~~~~~~~~~~~~~~~" << std::endl;
+                        std::cout << error << "           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
                         std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
                         return 1;
-                    
+
                     case 3:
-                        if(std::string(argv[2]) == "loop") { //awesome-cli -c loop
-                            std::cout << warning << ANSI_RESET << "Estresando procesador con " << ANSI_RED << ANSI_BOLD << NUM_CORES << ANSI_RESET << " núcleos " << ANSI_RED << ANSI_BOLD << "indefinidamente" << ANSI_RESET << ".. (Pulsa CTRL + C para abortar)" << std::endl;
-                            std::thread thread[NUM_CORES];  
-                        
-                            for(int i = 0; i < NUM_CORES; i++) {
-                                thread[i] = std::thread(stress_loop);
+                        std::cout << "Uso: " << commands::description::help_stress;
+                        std::cout << error << "                             ^~~~~~~~~~~~~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
+                        return 1;
+                    case 4:
+                        if(std::string(argv[3]) == "cpu" && std::string(argv[2]) == "loop") { //for loop cpu
+                                std::cout << warning << ANSI_RESET << "Estresando procesador con " << ANSI_RED << ANSI_BOLD << NUM_CORES << ANSI_RESET << " núcleos " << ANSI_RED << ANSI_BOLD << "indefinidamente" << ANSI_RESET << ".. (Pulsa CTRL + C para abortar)" << std::endl;
+                                std::thread thread[NUM_CORES];  
+                            
+                                for(int i = 0; i < NUM_CORES; i++) {
+                                    thread[i] = std::thread(stress_loop);
+                                }
+
+                                for(int i = 0; i < NUM_CORES; i++) {
+                                    thread[i].join();
+                                }
+
+                                return 0;
+                            }
+                            else if(std::string(argv[3]) == "cpu") { //for int cpu
+                                try {     
+                                    contador_top = std::stoi(argv[2]);
+
+                                } catch(const std::invalid_argument&) { //why const
+                                    std::cout << error << "El valor introducido no parece ser un número entero. ¿Quisiste decir --help stress?" << std::endl;
+                                    return 1;
+                                }
+
+                                integer.is = true;
+
+                                if(contador_top <= 0) {
+                                    std::cout << error << "El valor introducido no parece ser válido, debe estar en el rango de segundos 5 - 1000. ¿Quisiste decir --help stress?" << std::endl;
+                                    return 1;
+                                }
+
+                                std::cout << warning << ANSI_RESET << "Estresando procesador con " << ANSI_RED << ANSI_BOLD << NUM_CORES << ANSI_RESET << " núcleos durante " << ANSI_RED << ANSI_BOLD << contador_top << ANSI_RESET << " segundos.. (Pulsa CTRL + C para abortar)" << std::endl;
+                                std::thread thread[NUM_CORES];  
+                            
+                                for(int i = 0; i < NUM_CORES; i++) {
+                                    thread[i] = std::thread(std::bind(stress_count, contador_top));
+                                }
+
+                                for(int i = 0; i < NUM_CORES; i++) {
+                                    thread[i].join();
+                                }
+
+                                return 0;
+                            }    
+                        else if(std::string(argv[3]) == "ram" && std::string(argv[2]) == "loop") { //for loop 
+                            std::ifstream read_ram("/proc/meminfo");
+                            std::string ram_line;
+                            std::string kb_ram;
+
+                            while(std::getline(read_ram, ram_line)) {
+                                size_t delimiter = ram_line.find(':');
+
+                                if(ram_line.find("MemTotal") != std::string::npos) {
+                                    if(delimiter != std::string::npos) {
+                                        kb_ram = ram_line.substr(delimiter + 8);
+                                    }
+                                }
                             }
 
-                            for(int i = 0; i < NUM_CORES; i++) {
-                                thread[i].join();
-                            }
+                            std::cout << warning << ANSI_RESET << "Estresando RAM con una capacidad de " << ANSI_YELLOW << ANSI_BOLD << kb_ram << ANSI_RED << " indefinidamente" << ANSI_RESET << ".. (Pulsa CTRL + C para abortar)" << std::endl;
+                            char* memory_array = nullptr;
+                            size_t memory_to_alloc = 5 * 1024 * 1024;
 
+                            while(true) {
+                                memory_array = (char*)malloc(memory_to_alloc);
+                            }
                             return 0;
-                        } else {
-                            try {     
+                        } 
+                        else if(std::string(argv[3]) == "ram") {
+                                try {     
                                 contador_top = std::stoi(argv[2]);
 
                             } catch(const std::invalid_argument&) { //why const
@@ -370,24 +439,77 @@ int main(int argc, char* argv[]) {
                                 return 1;
                             }
 
-                            if(contador_top <= 0) {
-                                std::cout << error << "El valor introducido no parece ser válido, debe estar en el rango de segundos 5 - 1000. ¿Quisiste decir --help stress?" << std::endl;
-                                return 1;
-                            }
+                            integer.is = true;
 
-                            std::cout << warning << ANSI_RESET << "Estresando procesador con " << ANSI_RED << ANSI_BOLD << NUM_CORES << ANSI_RESET << " núcleos durante " << ANSI_RED << ANSI_BOLD << contador_top << ANSI_RESET << " segundos.. (Pulsa CTRL + C para abortar)" << std::endl;
-                            std::thread thread[NUM_CORES];  
+                            if(integer.is) {
+                                std::cout << "valid combi" << std::endl;
+                                return 0;   
+                            } 
                         
-                            for(int i = 0; i < NUM_CORES; i++) {
-                                thread[i] = std::thread(std::bind(stress_count, contador_top));
-                            }
-
-                            for(int i = 0; i < NUM_CORES; i++) {
-                                thread[i].join();
-                            }
-
                             return 0;
-                        }        
+                        } 
+                    }
+                }
+                else if(argv[1] == prefix::long_prefix + "encrypt") {
+                    switch(argc) {
+                    default:
+                        if (argc >= 5) {
+                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                            return 1;
+                        }
+                        else {
+                            std::cout << error << "Error inesperado." << std::endl;
+                            return 1;
+                        }
+
+                    case 2:
+                        std::cout << "Uso: " << commands::description::help_encrypt;
+                        std::cout << error << "            ^~~~~~~~~~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
+                        return 1;
+
+                    case 3:
+                        std::cout << "Uso: " << commands::description::help_encrypt;
+                        std::cout << error << "                    ^~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
+                        return 1;
+                    case 4:
+                        std::string encrypt_key = std::string(argv[3]);
+                        std::string encrypt_value = std::string(argv[2]);
+                        std::string encrypted = encrypt(encrypt_value, encrypt_key);
+                        std::cout << "La cadena encriptada es: " << encrypted << ", con la clave secreta " << encrypt_key << ". Guarda la clave secreta o tu codigo encriptado será inaccesible." << std::endl;
+                        return 0;
+                    }
+                }
+                else if(argv[1] == prefix::long_prefix + "decrypt") {
+                    switch(argc) {
+                    default:
+                        if (argc >= 5) {
+                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                            return 1;
+                        }
+                        else {
+                            std::cout << error << "Error inesperado." << std::endl;
+                            return 1;
+                        }
+
+                    case 2:
+                        std::cout << "Uso: " << commands::description::help_decrypt;
+                        std::cout << error << "            ^~~~~~~~~~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
+                        return 1;
+
+                    case 3:
+                        std::cout << "Uso: " << commands::description::help_decrypt;
+                        std::cout << error << "                    ^~~~~~~" << std::endl;
+                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
+                        return 1;
+                    case 4:
+                        std::string encrypted_value = std::string(argv[2]);
+                        std::string key = std::string(argv[3]);
+                        std::string decrypted = decrypt(encrypted_value, key);
+                        std::cout << "La cadena desencriptada es: " << ANSI_ITALIC << decrypted << ANSI_RESET << "." << std::endl;
+                        return 0;
                     }
                 }
                 else { //checking if entered a command not registered
@@ -398,21 +520,4 @@ int main(int argc, char* argv[]) {
         }
 
     return 0;
-}
-
-void print_hardware_info() {
-    std::cout << R"(
-                                    Información de GPU:
-    )" << gpu.gpu_info << R"(
-
-            Información de CPU:                                 Consumo:
-    Modelo: )" << cpu.model_name << R"(       RAM: )" << ram_usage << R"(
-                Núcleos: )" << cpu.cores << R"(                                     )" << formated_consum << R"(%
-
-        Información del sistema:                              Estado:
-        )" << info_os << R"(                            )" << formated_bot_status << R"(
-
-                                    Otros:
-                                        ./awesome-cli -t wired
-                                        ./awesome-cli -t part )" << std::endl;
 }
