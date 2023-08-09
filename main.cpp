@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     is_integer integer;
 
     if(prefix::entered_exec_name.find(prefix::program_name) == std::string::npos) {
-        std::cout << argv[0] << ": " << "El nombre del ejecutable debe ser \"" + prefix::program_name + "\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
+        std::cerr << argv[0] << ": " << "El nombre del ejecutable debe ser \"" + prefix::program_name + "\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
         return 1;
     } 
     else {
@@ -21,13 +21,13 @@ int main(int argc, char* argv[]) {
             }
         }
         else {
-           std::cout << "Uso: sudo ./awesome-cli --help\n";
+           std::cerr << "Uso: sudo ./awesome-cli --help\n";
             return 1;
         }
 
         switch (argc) {
             case 1: //tells how to do a good usage if the user just did ./awesome-cli
-                std::cout << "Uso: sudo ./" + prefix::program_name + " --help" << std::endl;
+                std::cerr << "Uso: sudo ./" + prefix::program_name + " --help" << std::endl;
                 return 1;
 
             default: //if the user entered a parameter, let register it and value it below.
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 
                         case 3:
                             if(std::string(argv[2]) == "help") {
-                                std::cout << error << "¿Quisiste decir --help?" << std::endl;
+                                std::cerr << error << "¿Quisiste decir --help?" << std::endl;
                                 return 1;
                             }
                             if (std::string(argv[2]) == "search") {
@@ -53,17 +53,17 @@ int main(int argc, char* argv[]) {
                                 std::cout << commands::description::help_stress;
                             }
                             else {
-                                std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
+                                std::cerr << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
                                 return 1;
                             }
                             break; 
 
                         default:
                             if (argc >= 4) {
-                                std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                                std::cerr << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
                                 return 1;
                             } else {
-                                std::cout << error << "Error inesperado." << std::endl;
+                                std::cerr << error << "Error inesperado." << std::endl;
                                 return 1;
                             }
                     }
@@ -83,18 +83,18 @@ int main(int argc, char* argv[]) {
 
                     switch(argc) {
                     case 2:
-                        std::cout << "Uso: " << commands::description::help_search;
-                        std::cout << error << "           ^~~~~~~~~~~~~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl; //set --search or -s for a more friendly-interact
+                        std::cerr << "Uso: " << commands::description::help_search;
+                        std::cerr << error << "           ^~~~~~~~~~~~~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl; //set --search or -s for a more friendly-interact
                         return 1;
                     case 3:
-                        std::cout << "Uso: " << commands::description::help_search;
-                        std::cout << error << "                     ^~~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
+                        std::cerr << "Uso: " << commands::description::help_search;
+                        std::cerr << error << "                     ^~~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
                         return 1;
                     case 4:
                         if (!file) {
-                            std::cout << error << "El archivo " << argv[2] << " no existe, asegúrate de indicar el formato de ruta correctamente." << std::endl;
+                            std::cerr << error << "El archivo " << argv[2] << " no existe, asegúrate de indicar el formato de ruta correctamente." << std::endl;
                             return 1;
                         } else {
                             while (std::getline(file, line)) {
@@ -113,17 +113,17 @@ int main(int argc, char* argv[]) {
                                 }
                                 return 0;
                             } else {
-                                std::cout << error << "La palabra clave introducida no existe en el archivo existente." << std::endl;
+                                std::cerr << error << "La palabra clave introducida no existe en el archivo existente." << std::endl;
                                 return 1;
                             }
                         }
 
                     default:
                         if(argc >= 5){
-                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help search?" << std::endl;
+                            std::cerr << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help search?" << std::endl;
                             return 1;
                         } else {
-                            std::cout << error << "Error inesperado.";
+                            std::cerr << error << "Error inesperado.";
                             return 1;
                         }
                     }
@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
                             std::cout << error << "Introduce un color: gris, verde" << std::endl;
                             return 1;
                         } else {
-                            std::cout << error << "El parámetro indicado no existe. ¿Quisiste decir --help config?" << std::endl;
+                            std::cerr << error << "El parámetro indicado no existe. ¿Quisiste decir --help config?" << std::endl;
                             return 1;
                         }
 
@@ -158,7 +158,7 @@ int main(int argc, char* argv[]) {
                                 return 0;
                             } 
                             else {
-                                std::cout << error << "El color indicado no existe. ¿Quisiste decir --help config?" << std::endl;
+                                std::cerr << error << "El color indicado no existe. ¿Quisiste decir --help config?" << std::endl;
                                 return 1;
                             }
                         }
@@ -166,10 +166,10 @@ int main(int argc, char* argv[]) {
 
                     default:
                         if (argc >= 4) { //awesome-cli -c set.color red ->red<->>
-                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help config?" << std::endl;
+                            std::cerr << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help config?" << std::endl;
                             return 1;
                         } else { //unhandled error
-                            std::cout << error << "Error inesperado." << std::endl;
+                            std::cerr << error << "Error inesperado." << std::endl;
                             return 1;
                         }
                     }
@@ -343,24 +343,24 @@ int main(int argc, char* argv[]) {
                     switch(argc) {
                      default:
                         if (argc >= 4) {
-                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                            std::cerr << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
                             return 1;
                         }
                         else {
-                            std::cout << error << "Error inesperado." << std::endl;
+                            std::cerr << error << "Error inesperado." << std::endl;
                             return 1;
                         }
 
                     case 2:
-                        std::cout << "Uso: " << commands::description::help_stress;
-                        std::cout << error << "           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
+                        std::cerr << "Uso: " << commands::description::help_stress;
+                        std::cerr << error << "           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
                         return 1;
 
                     case 3:
-                        std::cout << "Uso: " << commands::description::help_stress;
-                        std::cout << error << "                             ^~~~~~~~~~~~~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
+                        std::cerr << "Uso: " << commands::description::help_stress;
+                        std::cerr << error << "                             ^~~~~~~~~~~~~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
                         return 1;
                     case 4:
                         if(std::string(argv[3]) == "cpu" && std::string(argv[2]) == "loop") { //for loop cpu
@@ -382,14 +382,14 @@ int main(int argc, char* argv[]) {
                                     contador_top = std::stoi(argv[2]);
 
                                 } catch(const std::invalid_argument&) { //why const
-                                    std::cout << error << "El valor introducido no parece ser un número entero. ¿Quisiste decir --help stress?" << std::endl;
+                                    std::cerr << error << "El valor introducido no parece ser un número entero. ¿Quisiste decir --help stress?" << std::endl;
                                     return 1;
                                 }
 
                                 integer.is = true;
 
                                 if(contador_top <= 0) {
-                                    std::cout << error << "El valor introducido no parece ser válido, debe estar en el rango de segundos 5 - 1000. ¿Quisiste decir --help stress?" << std::endl;
+                                    std::cerr << error << "El valor introducido no parece ser válido, debe estar en el rango de segundos 5 - 1000. ¿Quisiste decir --help stress?" << std::endl;
                                     return 1;
                                 }
 
@@ -435,7 +435,7 @@ int main(int argc, char* argv[]) {
                                 contador_top = std::stoi(argv[2]);
 
                             } catch(const std::invalid_argument&) { //why const
-                                std::cout << error << "El valor introducido no parece ser un número entero. ¿Quisiste decir --help stress?" << std::endl;
+                                std::cerr << error << "El valor introducido no parece ser un número entero. ¿Quisiste decir --help stress?" << std::endl;
                                 return 1;
                             }
 
@@ -454,24 +454,24 @@ int main(int argc, char* argv[]) {
                     switch(argc) {
                     default:
                         if (argc >= 5) {
-                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                            std::cerr << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
                             return 1;
                         }
                         else {
-                            std::cout << error << "Error inesperado." << std::endl;
+                            std::cerr << error << "Error inesperado." << std::endl;
                             return 1;
                         }
 
                     case 2:
-                        std::cout << "Uso: " << commands::description::help_encrypt;
-                        std::cout << error << "            ^~~~~~~~~~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
+                        std::cerr << "Uso: " << commands::description::help_encrypt;
+                        std::cerr << error << "            ^~~~~~~~~~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
                         return 1;
 
                     case 3:
-                        std::cout << "Uso: " << commands::description::help_encrypt;
-                        std::cout << error << "                    ^~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
+                        std::cerr << "Uso: " << commands::description::help_encrypt;
+                        std::cerr << error << "                    ^~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
                         return 1;
                     case 4:
                         std::string encrypt_key = std::string(argv[3]);
@@ -485,24 +485,24 @@ int main(int argc, char* argv[]) {
                     switch(argc) {
                     default:
                         if (argc >= 5) {
-                            std::cout << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
+                            std::cerr << error << "Has indicado más parámetros de los necesarios. ¿Quisiste decir --help <command>?" << std::endl;
                             return 1;
                         }
                         else {
-                            std::cout << error << "Error inesperado." << std::endl;
+                            std::cerr << error << "Error inesperado." << std::endl;
                             return 1;
                         }
 
                     case 2:
-                        std::cout << "Uso: " << commands::description::help_decrypt;
-                        std::cout << error << "            ^~~~~~~~~~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
+                        std::cerr << "Uso: " << commands::description::help_decrypt;
+                        std::cerr << error << "            ^~~~~~~~~~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (2 restantes)" << std::endl;
                         return 1;
 
                     case 3:
-                        std::cout << "Uso: " << commands::description::help_decrypt;
-                        std::cout << error << "                    ^~~~~~~" << std::endl;
-                        std::cout << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
+                        std::cerr << "Uso: " << commands::description::help_decrypt;
+                        std::cerr << error << "                    ^~~~~~~" << std::endl;
+                        std::cerr << ANSI_RED << "Parámetros insuficientes para " << argv[1] << ". (1 restante)" << std::endl;
                         return 1;
                     case 4:
                         std::string encrypted_value = std::string(argv[2]);
@@ -513,7 +513,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
                 else { //checking if entered a command not registered
-                    std::cout << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
+                    std::cerr << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
                     return 1;
                 }
             }
