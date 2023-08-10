@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     is_integer integer;
 
     if(prefix::entered_exec_name.find(prefix::program_name) == std::string::npos) {
-        std::cerr << argv[0] << ": " << "El nombre del ejecutable debe ser \"" + prefix::program_name + "\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
+        std::cerr << error << "El nombre del ejecutable debe ser \"" + prefix::program_name + "\". Por favor, no trate de modificar ni distribuir este programa." << std::endl;
         return 1;
     } 
     else {
@@ -21,13 +21,13 @@ int main(int argc, char* argv[]) {
             }
         }
         else {
-           std::cerr << "Uso: sudo ./awesome-cli --help\n";
+           std::cerr << ANSI_YELLOW << "Uso: sudo ./awesome-cli --help\n";
             return 1;
         }
 
         switch (argc) {
             case 1: //tells how to do a good usage if the user just did ./awesome-cli
-                std::cerr << "Uso: sudo ./" + prefix::program_name + " --help" << std::endl;
+                std::cerr << ANSI_YELLOW << "Uso: sudo ./" + prefix::program_name + " --help" << std::endl;
                 return 1;
 
             default: //if the user entered a parameter, let register it and value it below.
@@ -511,6 +511,10 @@ int main(int argc, char* argv[]) {
                         std::cout << "La cadena desencriptada es: " << ANSI_ITALIC << decrypted << ANSI_RESET << "." << std::endl;
                         return 0;
                     }
+                }
+                else if(std::strlen(argv[1]) == 2) {
+                    std::cerr << error << "El comando indicado no existe. ¿Quisiste decir -h?" << std::endl;
+                    return 1;
                 }
                 else { //checking if entered a command not registered
                     std::cerr << error << "El comando indicado no existe. ¿Quisiste decir --help?" << std::endl;
