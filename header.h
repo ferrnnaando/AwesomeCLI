@@ -7,30 +7,28 @@
 #include <thread>
 #include <stdlib.h>
 #include <functional>
-
+#include <chrono>
+#include <cstring>
 #define NUM_CORES std::thread::hardware_concurrency()
+const std::string ANSI_RED = "\033[31m";
+const std::string ANSI_YELLOW = "\033[33m";
+const std::string ANSI_RESET = "\033[0m";
+const std::string ANSI_UNDERLINE = "\033[4m";
+const std::string ANSI_ITALIC = "\033[3m";
+const std::string ANSI_BOLD = "\033[1m";
+std::string error = ANSI_RED + "Error: " + ANSI_RED;
+std::string warning = ANSI_YELLOW + "Advertencia: " + ANSI_YELLOW;
 
 #ifdef _WIN32
     #include <windows.h>
-
 #else
     #include <unistd.h>
-    #include <chrono>
     #include <cstdio>
 	#include <memory>
 	#include <stdexcept>
 	#include <sys/sysinfo.h>
 	#include <sys/statvfs.h>
 	#include <iomanip>
-
-    const std::string ANSI_RED = "\033[31m";
-    const std::string ANSI_YELLOW = "\033[33m";
-    const std::string ANSI_RESET = "\033[0m";
-    const std::string ANSI_UNDERLINE = "\033[4m";
-    const std::string ANSI_ITALIC = "\033[3m";
-    const std::string ANSI_BOLD = "\033[1m";
-    std::string error = ANSI_RED + "Error: " + ANSI_RED;
-    std::string warning = ANSI_YELLOW + "Advertencia: " + ANSI_YELLOW;
 #endif
 
 struct is_integer {
@@ -44,20 +42,20 @@ struct config_file;
 struct hardware_info;
 struct statvfs buffer;
 struct system_info {
-		std::string model_name; //cpu
-		std::string cores; //cpu
-		std::string gpu_info; //gpu
-		double ram_total; //ram
-		double ram_used; //ram
-		double ram_percent; //ram
-		long ram_total_literal; //ram
-		long memav_value; //ram
-		std::string os_name; //os info
-		std::string os_model = "Linux"; //os info
-		std::string disk_usage; //disk info
-		std::string network_usage; //network info
+    std::string model_name; //cpu
+    std::string cores; //cpu
+    std::string gpu_info; //gpu
+    double ram_total; //ram
+    double ram_used; //ram
+    double ram_percent; //ram
+    long ram_total_literal; //ram
+    long memav_value; //ram
+    std::string os_name; //os info
+    std::string os_model = "Linux"; //os info
+    std::string disk_usage; //disk info
+    std::string network_usage; //network info
 
-		bool found_cpu, found_gpu, found_ram, found_os;
+    bool found_cpu, found_gpu, found_ram, found_os;
 };
 
 system_info cpu;
