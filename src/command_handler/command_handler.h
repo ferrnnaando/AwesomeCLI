@@ -5,5 +5,5 @@
 
 class command_handler {
     public:
-        static int process(int& argc, char* argv[], std::map<std::string, std::string>& commands);
+        static int process(int& argc, char* argv[], std::map<std::string, std::string>& commands, std::string &error_command);
 };
