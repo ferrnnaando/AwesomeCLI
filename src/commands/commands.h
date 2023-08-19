@@ -3,5 +3,6 @@
 
 class commands {
     public:
-        static int info();
+        static int version();
+        static int help();
 };

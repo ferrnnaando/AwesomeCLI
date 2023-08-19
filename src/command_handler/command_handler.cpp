@@ -14,8 +14,10 @@ int command_handler::process(int& argc, char* argv[], std::map<std::string, std:
                 } 
                 else {
                     auto searchCmd = commands.find(entered_command);
-                    if(searchCmd->first == "info") /*what is swap and second*/{
-                        return commands::info();
+                    if(searchCmd->first == "--version") /*what is swap and second*/{
+                        return commands::version();
+                    } else if(searchCmd->first == "--help") {
+                        return commands::help();
                     }
                 }
             }
